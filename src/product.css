@@ -1,0 +1,1055 @@
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  background: #f7f7f9;
+
+  color: #111;
+}
+
+
+/* =========================================
+   CONTAINER PRODUITS
+========================================= */
+
+.product-container {
+  width: 100%;
+  padding: 0 20px;
+}
+
+
+/* =========================================
+   MINI NAVBAR PRODUITS
+========================================= */
+
+.products-navbar {
+  width: 100%;
+  max-width: 1400px;
+  margin-top:  80px;
+
+  padding: 20px 30px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+}
+
+
+/* =========================================
+   TITRE
+========================================= */
+
+.products-navbar h1 {
+  margin: 0;
+
+  font-size: 28px;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================
+   TRI PAR PRIX
+========================================= */
+
+.sort-container {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  margin-left: auto;
+}
+
+.sort-container label {
+  font-size: 14px;
+
+  font-weight: 600;
+
+  color: #333;
+
+  white-space: nowrap;
+}
+
+.sort-container select {
+  height: 45px;
+
+  padding: 0 35px 0 15px;
+
+  border: 1px solid #ddd;
+
+  border-radius: 25px;
+
+  background: #ffffff;
+
+  color: #333;
+
+  font-size: 14px;
+
+  outline: none;
+
+  cursor: pointer;
+
+  transition: all 0.3s ease;
+}
+
+.sort-container select:hover {
+  border-color: #1677f7;
+}
+
+.sort-container select:focus {
+  border-color: #1677f7;
+
+  box-shadow:
+    0 0 0 3px rgba(22, 119, 247, 0.12);
+}
+
+
+/* =========================================
+   BARRE DE RECHERCHE
+========================================= */
+
+.search-container {
+  position: relative;
+
+  width: 350px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+}
+
+
+.search-container input {
+  width: 100%;
+
+  height: 45px;
+
+  padding: 0 45px;
+
+  border: 1px solid #ddd;
+
+  border-radius: 25px;
+
+  outline: none;
+
+  background: #ffffff;
+
+  font-size: 15px;
+
+  transition: 0.3s;
+}
+
+.search-container input:focus {
+  border-color: #1677f7;
+
+  box-shadow:
+    0 0 0 3px rgba(22, 119, 247, 0.10);
+}
+
+
+/* =========================================
+   ICÔNE RECHERCHE
+========================================= */
+
+.search-icon {
+  position: absolute;
+
+  left: 16px;
+
+  font-size: 17px;
+
+  z-index: 1;
+}
+
+
+/* =========================================
+   BOUTON EFFACER RECHERCHE
+========================================= */
+
+.clear-search {
+  position: absolute;
+
+  right: 10px;
+
+  width: 28px;
+
+  height: 28px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border: none;
+
+  border-radius: 50%;
+
+  background: #f1f1f1;
+
+  cursor: pointer;
+
+  font-size: 15px;
+
+  transition: 0.2s;
+}
+
+.clear-search:hover {
+  background: #e1e1e1;
+
+  transform: scale(1.05);
+}
+
+
+/* =========================================
+   RÉSULTAT RECHERCHE
+========================================= */
+
+.search-result {
+  width: 100%;
+
+  max-width: 1400px;
+
+  margin: 0 auto 20px;
+
+  padding: 0 30px;
+
+  color: #666;
+
+  font-size: 14px;
+}
+
+
+/* =========================================
+   LISTE DES PRODUITS
+========================================= */
+
+.products-list {
+  width: 100%;
+
+  max-width: 1400px;
+
+  margin: 15px auto;
+
+  padding: 20px 30px;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, 1fr);
+  gap: 30px;
+}
+
+
+/* =========================================
+   PRODUCT CARD
+========================================= */
+
+.product-card {
+  margin-top: 30px;
+
+  width: 100%;
+
+  background: #e9ecf8;
+
+  border-radius: 25px;
+
+  padding: 18px;
+
+  overflow: hidden;
+
+  display: flex;
+
+  flex-direction: column;
+
+  height: 600px;
+
+  box-shadow:
+    0 10px 25px rgba(0, 0, 0, 0.08);
+
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
+}
+
+
+/* =========================================
+   HOVER CARD
+========================================= */
+
+.product-card:hover {
+  box-shadow:
+    0 18px 40px #1678f7c0;
+
+  transform: translateY(-3px);
+}
+
+
+/* =========================================
+   IMAGE CONTAINER
+========================================= */
+
+.image-container {
+  position: relative;
+
+  width: 100%;
+
+  height: 280px;
+
+  background: #ffffff;
+
+  border-radius: 18px;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  overflow: hidden;
+}
+
+
+/* =========================================
+   PRODUCT IMAGE
+========================================= */
+
+.product-image {
+  width: 90%;
+
+  height: 90%;
+
+  object-fit: contain;
+
+  display: block;
+
+  transition:
+    transform 0.4s ease;
+}
+
+.product-card:hover .product-image {
+  transform: scale(1.05);
+}
+
+
+/* =========================================
+   PRODUCT TITLE
+========================================= */
+
+.product-card h2 {
+  width: 100%;
+
+  min-height: 55px;
+
+  margin: 22px 0 10px;
+
+  padding: 0;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  text-align: center;
+
+  font-size: 21px;
+
+  line-height: 1.3;
+
+  font-weight: 700;
+
+  color: #111;
+}
+
+
+/* =========================================
+   DESCRIPTION
+========================================= */
+
+.description {
+  margin: 0 0 20px;
+
+  text-align: center;
+
+  color: #777;
+
+  font-size: 14px;
+
+  line-height: 1.6;
+
+  display: -webkit-box;
+
+  -webkit-line-clamp: 3;
+
+  -webkit-box-orient: vertical;
+
+  overflow: hidden;
+}
+
+
+/* =========================================
+   PRICE CONTAINER
+========================================= */
+
+.price-container {
+  width: 100%;
+
+  margin-top: auto;
+
+  margin-bottom: 22px;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+}
+
+
+/* =========================================
+   PRICE
+========================================= */
+
+.price {
+  color: #1677f7;
+
+  font-size: 26px;
+
+  font-weight: 800;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================
+   CART BUTTON
+========================================= */
+
+.cart-button {
+  width: 100%;
+
+  height: 55px;
+
+  padding: 0 15px;
+
+  border: none;
+
+  border-radius: 15px;
+
+  background:
+    linear-gradient(
+      50deg,
+      #1678f7e7,
+      #0c0709e1
+    );
+
+  color: white;
+
+  font-size: 17px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+
+/* =========================================
+   BUTTON HOVER
+========================================= */
+
+.cart-button:hover {
+  transform: translateY(-3px);
+
+  opacity: 0.92;
+
+  box-shadow:
+    0 8px 18px
+    rgba(1, 3, 31, 0.952);
+}
+
+
+/* =========================================
+   BUTTON ACTIVE
+========================================= */
+
+.cart-button:active {
+  transform: translateY(0);
+}
+
+
+/* =========================================
+   AUCUN PRODUIT
+========================================= */
+
+.no-products {
+  width: 100%;
+
+  max-width: 800px;
+
+  margin: 50px auto;
+
+  padding: 60px 20px;
+
+  text-align: center;
+
+  background: #ffffff;
+
+  border-radius: 20px;
+
+  box-shadow:
+    0 10px 30px
+    rgba(0, 0, 0, 0.06);
+}
+
+.no-products h2 {
+  margin-bottom: 10px;
+}
+
+.no-products p {
+  color: #777;
+
+  margin-bottom: 25px;
+}
+
+.no-products button {
+  padding: 12px 22px;
+
+  border: none;
+
+  border-radius: 10px;
+
+  background: #1677f7;
+
+  color: white;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.25s;
+}
+
+.no-products button:hover {
+  background: #0d63d4;
+
+  transform: translateY(-2px);
+}
+
+
+/* =========================================
+   PAGINATION
+========================================= */
+
+.premium-pagination {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 6px;
+
+  width: fit-content;
+
+  margin: 40px auto;
+
+  padding: 8px 14px;
+
+  background: #ffffff;
+
+  border: 1px solid #e8e8ef;
+
+  border-radius: 40px;
+
+  box-shadow:
+    0 10px 35px
+    rgba(60, 70, 120, 0.12),
+
+    0 3px 10px
+    rgba(0, 0, 0, 0.04);
+}
+
+
+/* =========================================
+   PAGES
+========================================= */
+
+.pagination-pages {
+  display: flex;
+
+  align-items: center;
+
+  gap: 3px;
+}
+
+
+.pagination-page,
+.pagination-arrow {
+  width: 42px;
+
+  height: 42px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border: none;
+
+  border-radius: 50%;
+
+  background: transparent;
+
+  color: #252832;
+
+  font-size: 14px;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+
+/* =========================================
+   HOVER PAGINATION
+========================================= */
+
+.pagination-page:hover:not(.active),
+.pagination-arrow:hover:not(:disabled) {
+  background: #f2f3f8;
+}
+
+
+/* =========================================
+   PAGE ACTIVE
+========================================= */
+
+.pagination-page.active {
+  color: white;
+
+  background: #1677f7;
+
+  box-shadow:
+    0 6px 15px
+    rgba(98, 81, 235, 0.45),
+
+    0 0 20px
+    rgba(119, 100, 255, 0.3);
+
+  transform: translateY(-1px);
+}
+
+
+/* =========================================
+   FLÈCHES
+========================================= */
+
+.pagination-arrow {
+  font-size: 22px;
+}
+
+
+.pagination-arrow:disabled {
+  opacity: 0.25;
+
+  cursor: not-allowed;
+}
+
+
+/* =========================================
+   ...
+========================================= */
+
+.pagination-dots {
+  width: 32px;
+
+  height: 42px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  color: #626571;
+}
+
+
+/* =========================================
+   SÉPARATEUR
+========================================= */
+
+.pagination-divider {
+  width: 1px;
+
+  height: 26px;
+
+  background: #e5e6ec;
+
+  margin: 0 5px;
+}
+
+
+/* =========================================
+   SELECT PAGINATION
+========================================= */
+
+.pagination-select {
+  height: 42px;
+
+  padding: 0 15px;
+
+  border: 1px solid #e8e9ef;
+
+  border-radius: 22px;
+
+  background: #f8f8fb;
+
+  color: #2b2d36;
+
+  outline: none;
+
+  cursor: pointer;
+}
+
+
+/* =========================================
+   GO TO PAGE
+========================================= */
+
+.goto-container {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  font-size: 13px;
+
+  color: #555967;
+}
+
+
+.goto-input {
+  width: 60px;
+
+  height: 42px;
+
+  border: 1px solid #e8e9ef;
+
+  border-radius: 22px;
+
+  background: #f8f8fb;
+
+  text-align: center;
+
+  outline: none;
+}
+
+
+.goto-input:focus {
+  border-color: #1677f7;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(114, 98, 238, 0.1);
+}
+
+
+/* Supprime les flèches du input number */
+
+.goto-input::-webkit-inner-spin-button,
+.goto-input::-webkit-outer-spin-button {
+  appearance: none;
+
+  margin: 0;
+}
+
+
+/* =========================================
+   TABLETTE - 3 COLONNES
+========================================= */
+
+@media (max-width: 1100px) {
+
+  .products-list {
+    grid-template-columns:
+      repeat(3, 1fr);
+
+    gap: 25px;
+
+    padding: 20px;
+  }
+
+  .products-navbar {
+    padding: 20px;
+  }
+
+}
+
+
+/* =========================================
+   TABLETTE - 2 COLONNES
+========================================= */
+
+@media (max-width: 900px) {
+
+  .products-navbar {
+    flex-wrap: wrap;
+  }
+
+  .products-navbar h1 {
+    width: 100%;
+
+    text-align: center;
+  }
+
+  .sort-container {
+    margin-left: 0;
+  }
+
+  .search-container {
+    width: 350px;
+  }
+
+  .products-list {
+    grid-template-columns:
+      repeat(2, 1fr);
+
+    gap: 20px;
+  }
+
+  .image-container {
+    height: 250px;
+  }
+
+  .product-card h2 {
+    font-size: 19px;
+  }
+
+  .price {
+    font-size: 23px;
+  }
+
+}
+
+
+/* =========================================
+   MOBILE - 1 COLONNE
+========================================= */
+
+@media (max-width: 650px) {
+
+  .product-container {
+    padding: 0 10px;
+  }
+
+  .products-navbar {
+    flex-direction: column;
+
+    align-items: stretch;
+
+    gap: 15px;
+
+    padding: 15px;
+
+    margin-bottom: 20px;
+  }
+
+  .products-navbar h1 {
+    width: 100%;
+
+    text-align: center;
+
+    font-size: 24px;
+  }
+
+  .sort-container {
+    width: 100%;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    margin: 0;
+  }
+
+  .sort-container select {
+    flex: 1;
+
+    max-width: 230px;
+  }
+
+  .search-container {
+    width: 100%;
+
+    max-width: none;
+  }
+
+  .products-list {
+    grid-template-columns: 1fr;
+
+    padding: 20px 10px;
+
+    gap: 25px;
+  }
+
+  .product-card {
+    width: 100%;
+
+    max-width: 360px;
+
+    margin: 0 auto;
+  }
+
+  .image-container {
+    height: 280px;
+  }
+
+}
+
+
+/* =========================================
+   PAGINATION MOBILE
+========================================= */
+
+@media (max-width: 700px) {
+
+  .premium-pagination {
+    width: 95%;
+
+    flex-wrap: wrap;
+
+    border-radius: 25px;
+
+    padding: 10px;
+  }
+
+  .pagination-page,
+  .pagination-arrow {
+    width: 36px;
+
+    height: 36px;
+  }
+
+  .pagination-divider {
+    display: none;
+  }
+
+  .goto-container {
+    width: 100%;
+
+    justify-content: center;
+
+    margin-top: 5px;
+  }
+
+}
+
+
+/* =========================================
+   PETIT MOBILE
+========================================= */
+
+@media (max-width: 380px) {
+
+  .products-list {
+    padding: 15px 5px;
+  }
+
+  .product-card {
+    padding: 14px;
+
+    border-radius: 20px;
+  }
+
+  .image-container {
+    height: 240px;
+
+    border-radius: 15px;
+  }
+
+  .product-card h2 {
+    font-size: 18px;
+  }
+
+  .description {
+    font-size: 13px;
+  }
+
+  .price {
+    font-size: 21px;
+  }
+
+  .cart-button {
+    height: 50px;
+
+    font-size: 15px;
+  }
+
+  .sort-container {
+    flex-direction: column;
+    align-items: stretch;
+   
+  }
+
+  .sort-container select {
+    width: 100%;
+
+    max-width: none;
+  }
+
+}
+.sort-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sort-container label {
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.sort-container select {
+  padding: 10px 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.sort-container select:hover {
+  border-color: #999;
+}
+
+.sort-container select:focus {
+  outline: none;
+  border-color: #555;
+}
+
