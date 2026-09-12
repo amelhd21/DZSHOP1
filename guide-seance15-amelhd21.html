@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Séance 15 — MongoDB — DZSHOP1</title>
+<style>
+  :root{
+    --bg:#0f172a; --panel:#111827; --panel2:#1e293b; --text:#e2e8f0; --muted:#94a3b8;
+    --accent:#22c55e; --accent2:#38bdf8; --warn:#f59e0b; --danger:#ef4444; --code-bg:#0b1220;
+    --border:#2b3648;
+  }
+  *{box-sizing:border-box;}
+  body{background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; margin:0; line-height:1.6;}
+  .wrap{max-width:880px; margin:0 auto; padding:32px 20px 80px;}
+  h1{font-size:1.7rem; margin-bottom:4px;}
+  .sub{color:var(--muted); margin-top:0; margin-bottom:28px; font-size:0.95rem;}
+  .badge{display:inline-block; background:var(--panel2); color:var(--accent2); padding:2px 10px; border-radius:20px; font-size:0.8rem; font-family:monospace; margin-right:6px;}
+  h2{font-size:1.3rem; color:var(--accent2); border-bottom:1px solid var(--border); padding-bottom:8px; margin-top:48px;}
+  h3{font-size:1.05rem; color:#fff; margin-top:28px;}
+  p{margin:10px 0;}
+  .step{background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:18px 20px; margin:16px 0;}
+  .step-num{display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:50%; background:var(--accent); color:#052e16; font-weight:700; font-size:0.85rem; margin-right:10px;}
+  .why{background:#0b2436; border-left:4px solid var(--accent2); padding:12px 16px; border-radius:6px; margin:12px 0; font-size:0.95rem;}
+  .why b{color:var(--accent2);}
+  .warn{background:#2b1a06; border-left:4px solid var(--warn); padding:12px 16px; border-radius:6px; margin:12px 0;}
+  .warn b{color:var(--warn);}
+  .file-tag{font-family:monospace; background:var(--panel2); padding:2px 8px; border-radius:4px; color:#fbbf24; font-size:0.9rem;}
+  pre{background:var(--code-bg); border:1px solid var(--border); border-radius:8px; padding:14px 16px; overflow-x:auto; font-size:0.88rem;}
+  code{font-family:"SF Mono",Consolas,Monaco,monospace;}
+  pre code{color:#d1fae5;}
+  .comment{color:#64748b;}
+  .darija{color:#fbbf24; font-style:italic;}
+  details{background:var(--panel2); border:1px solid var(--border); border-radius:8px; margin:14px 0; padding:0;}
+  summary{cursor:pointer; padding:12px 16px; font-weight:600; color:var(--accent);}
+  details[open] summary{border-bottom:1px solid var(--border);}
+  details .inside{padding:14px 16px;}
+  .challenge{border:1px dashed var(--accent2); border-radius:10px; padding:16px 18px; margin:16px 0; background:#08202f;}
+  .challenge h4{margin:0 0 8px; color:var(--accent2);}
+  .top-recap{background:var(--panel); border-radius:12px; padding:18px 20px; border:1px solid var(--border);}
+  .top-recap ul{margin:8px 0 0; padding-left:20px;}
+  .align-note{background:#1a1030; border:1px solid #7c3aed; border-radius:10px; padding:16px 20px; margin:0 0 24px;}
+  .align-note b{color:#c4b5fd;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>🍃 Séance 15 — MongoDB, à partir de zéro sur DZSHOP1</h1>
+  <p class="sub"><span class="badge">Élève : amelhd21</span><span class="badge">Repo : DZSHOP1</span><span class="badge">Prochaine séance : #15 / 18</span></p>
+
+  <div class="align-note"><b>Mise à jour :</b> ce guide est maintenant calqué sur le GUIDE-COMPLET officiel (Atlas, modules ES, conventions de code). Ignore la version précédente que tu as pu recevoir — celle-ci la remplace.</div>
+
+  <div class="top-recap">
+    <p><b>Où t'en es aujourd'hui (constaté dans ton repo) :</b></p>
+    <ul>
+      <li>✅ Ta structure est propre : <span class="file-tag">src/contexte/AuthContext.jsx</span> et <span class="file-tag">CartContext.jsx</span> bien séparés, <code>LoginPage</code>/<code>RegisterPage</code>/<code>CheckoutPage</code>/<code>PrivateRoute</code>/<code>DetailProductPage</code> déjà en place. C'est du bon découpage, exactement ce qu'il faut pour la suite.</li>
+      <li>✅ Tes produits sont déjà centralisés dans un seul endroit : <span class="file-tag">src/produit.jsx</span> exporte <code>export const products = [...]</code>. Contrairement à d'autres dans le groupe, tu n'as pas besoin d'étape de nettoyage avant — tu peux attaquer MongoDB directement.</li>
+      <li>ℹ️ <span class="file-tag">src/CheckoutPage.jsx</span> vide le panier au clic sur "commander" (<code>clearCart()</code>) sans enregistrer la commande nulle part. C'est normal à ce stade (la gestion des commandes arrive à la séance 17), on n'y touche pas aujourd'hui.</li>
+    </ul>
+    <p>Tu es dans la meilleure position du groupe pour cette séance : structure prête, données centralisées. On va construire le backend de A à Z, avec MongoDB Atlas.</p>
+  </div>
+
+  <div class="warn"><b>On ne branche pas React sur l'API aujourd'hui</b> — <span class="file-tag">src/produit.jsx</span> reste la source du frontend pour l'instant. Le rebranchement (produits ET connexion) viendra ensemble à une séance plus tard, une fois JWT prêt aussi.</div>
+
+  <h2>Étape 1 — Créer la base sur MongoDB Atlas</h2>
+  <div class="step">
+    <ol>
+      <li>Va sur <b>mongodb.com/atlas</b> → <b>Try Free</b> → crée un compte.</li>
+      <li>Crée un projet, puis un <b>cluster</b> → offre <b>M0 (FREE)</b> → Create.</li>
+      <li><b>Database Access</b> → <b>Add New Database User</b> → note bien le nom et le mot de passe.</li>
+      <li><b>Network Access</b> → <b>Add IP Address</b> → <b>Allow access from anywhere</b> (<code>0.0.0.0/0</code>).</li>
+      <li>Cluster → <b>Connect</b> → <b>Drivers</b> → copie le lien <code>mongodb+srv://...</code></li>
+    </ol>
+    <div class="warn"><b>2 choses à corriger dans le lien copié :</b> remplace <code>&lt;password&gt;</code> par ton vrai mot de passe, et ajoute <code>/dzshop</code> juste avant le <code>?</code>.</div>
+  </div>
+
+  <h2>Étape 2 — Créer le backend</h2>
+  <div class="step">
+    <p><span class="step-num">1</span><b>À la racine de ton projet</b> (pas dans <code>src/</code>) :</p>
+    <pre><code>mkdir backend
+cd backend
+npm init -y
+npm install express mongoose cors dotenv
+npm install nodemon --save-dev</code></pre>
+    <p>Dans <span class="file-tag">backend/package.json</span>, ajoute <code>"type": "module"</code> et un script <code>dev</code> :</p>
+    <pre><code>{
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "seed": "node seed.js"
+  }
+}</code></pre>
+  </div>
+
+  <div class="step">
+    <p><span class="step-num">2</span><b>Crée <span class="file-tag">backend/server.js</span> :</b></p>
+    <pre><code>import dns from 'node:dns';
+dns.setServers(['8.8.8.8', '8.8.4.4']);   <span class="comment">// fix DNS pour Atlas</span>
+
+import express from 'express';
+import cors from 'cors';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+dotenv.config();
+
+import produitRoutes from './routes/produits.js';
+
+mongoose.connect(process.env.MONGO_URI)
+  .then(function () { console.log('MongoDB connecté'); })
+  .catch(function (err) { console.log('Erreur MongoDB :', err.message); });
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+app.use('/api/products', produitRoutes);
+
+app.listen(5000, function () {
+  console.log('Serveur sur http://localhost:5000');
+});</code></pre>
+    <ul>
+      <li><code>cors()</code> → sans ça, ton frontend (sur un port différent) serait bloqué par le navigateur quand il essaiera d'appeler ton backend. C'est une règle de sécurité normale des navigateurs.</li>
+      <li><code>express.json()</code> → permet à Express de comprendre le JSON envoyé dans le corps d'une requête.</li>
+    </ul>
+  </div>
+
+  <div class="step">
+    <p><span class="step-num">3</span><b>Ouvre <span class="file-tag">src/produit.jsx</span></b> et regarde la forme exacte de tes objets produits. Crée <span class="file-tag">backend/models/Produit.js</span> en respectant EXACTEMENT ces mêmes clés :</p>
+    <pre><code>import mongoose from 'mongoose';
+
+const schema = new mongoose.Schema({
+  nom:         { type: String, required: true },
+  prix:        { type: Number, required: true, min: 0 },
+  categorie:   { type: String, default: 'Divers' },
+  images:      [String],
+  description: String
+}, {
+  timestamps: true
+});
+
+export default mongoose.model('Produit', schema);</code></pre>
+    <div class="warn"><b>Adapte les noms de champs à ta vraie structure :</b> j'ai mis des noms probables (<code>nom</code>, <code>prix</code>, <code>categorie</code>, <code>images</code>) — vérifie dans <span class="file-tag">src/produit.jsx</span> les vrais noms de propriétés, et corrige le schema pour qu'il corresponde EXACTEMENT. Un schema qui ne correspond pas à tes vraies données provoquera des champs vides une fois migré.</div>
+  </div>
+
+  <div class="step">
+    <p><span class="step-num">4</span><b>Crée <span class="file-tag">backend/seed.js</span></b> — recopie ton tableau <code>products</code> à la main ici (les images locales importées ne peuvent pas être réutilisées telles quelles côté backend, utilise juste leur nom de fichier en texte pour l'instant) :</p>
+    <pre><code>import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+dotenv.config();
+import Produit from './models/Produit.js';
+
+const produits = [
+  <span class="comment">// recopie tes produits de src/produit.jsx, un par un, avec les mêmes clés que ton schema</span>
+  { nom: "Souris Gaming RGB", prix: 4200, categorie: "Accessoires", description: "..." },
+];
+
+mongoose.connect(process.env.MONGO_URI)
+  .then(async function () {
+    await Produit.deleteMany({});
+    await Produit.insertMany(produits);
+    console.log('Produits importés !');
+    mongoose.disconnect();
+  });</code></pre>
+  </div>
+
+  <div class="step">
+    <p><span class="step-num">5</span><b>Crée <span class="file-tag">backend/routes/produits.js</span> :</b></p>
+    <pre><code>import express from 'express';
+import Produit from '../models/Produit.js';
+
+const router = express.Router();
+
+router.get('/', async function (req, res) {
+  try {
+    const produits = await Produit.find();
+    res.json(produits);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.get('/:id', async function (req, res) {
+  try {
+    const produit = await Produit.findById(req.params.id);
+    if (!produit) {
+      res.status(404).json({ message: 'Produit non trouvé' });
+      return;
+    }
+    res.json(produit);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+export default router;</code></pre>
+  </div>
+
+  <div class="step">
+    <p><span class="step-num">6</span><b>Crée <span class="file-tag">backend/.env</span></b> avec ton lien Atlas corrigé, vérifie <span class="file-tag">.gitignore</span>, puis lance :</p>
+    <pre><code>npm run seed
+npm run dev</code></pre>
+    <p>Ouvre <code>http://localhost:5000/api/products</code> dans ton navigateur — tu dois voir tes produits en JSON, chacun avec un <code>_id</code> généré par MongoDB (retiens bien ça : ce sera l'identifiant à utiliser plus tard, à la place de ton ancien <code>id</code> en dur, quand on rebranchera React).</p>
+  </div>
+
+  <h2>Étape 3 — Tester tes 2 routes avec Postman</h2>
+  <p>Télécharge Postman (postman.com/downloads) ou utilise "Thunder Client" dans VS Code.</p>
+
+  <div class="step">
+    <p><span class="step-num">1</span><b>Teste le GET de tous les produits</b> — serveur lancé (<code>npm run dev</code> dans <span class="file-tag">backend/</span>) :</p>
+    <ol>
+      <li>Nouvel onglet Postman, méthode <code>GET</code>, URL <code>http://localhost:5000/api/products</code>, "Send".</li>
+      <li>Repère un <code>_id</code> dans la réponse (une longue chaîne, pas ton ancien <code>id</code> numérique).</li>
+    </ol>
+  </div>
+
+  <div class="step">
+    <p><span class="step-num">2</span><b>Teste le GET par id</b> avec ce <code>_id</code> :</p>
+    <ol>
+      <li>Même méthode <code>GET</code>, URL <code>http://localhost:5000/api/products/&lt;colle le _id ici&gt;</code>.</li>
+      <li>"Send" → tu dois récupérer UN SEUL produit, pas la liste entière.</li>
+      <li>Remplace la fin de l'URL par n'importe quoi d'inventé (ex. <code>abc123</code>) et regarde la réponse — c'est exactement ce que le Défi 1 (plus bas) te demande d'observer.</li>
+    </ol>
+  </div>
+
+  <h2>Défis progressifs</h2>
+
+  <div class="challenge">
+    <h4>Défi 1 (facile) — Un id malformé</h4>
+    <p>Fais un <code>GET /api/products/abc123</code> (pas 24 caractères valides). Ta route <code>GET /:id</code> renvoie-t-elle un message propre, ou une erreur brute ? Regarde bien si ton <code>try/catch</code> l'attrape.</p>
+  </div>
+
+  <div class="challenge">
+    <h4>Défi 2 (moyen) — Ajouter la création d'un produit (POST), et la tester</h4>
+    <p>Ajoute une route <code>POST /api/products</code> dans <span class="file-tag">backend/routes/produits.js</span>, sur le même modèle que le <code>GET</code>. Teste-la ensuite dans Postman : méthode <code>POST</code>, même URL de base, onglet Body → raw → JSON, avec un produit qui respecte les champs de ton schema.</p>
+    <details><summary>Voir la solution</summary><div class="inside">
+      <pre><code>router.post('/', async function (req, res) {
+  try {
+    const nouveau = await Produit.create(req.body);
+    res.status(201).json(nouveau);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});</code></pre>
+    </div></details>
+  </div>
+
+  <div class="challenge">
+    <h4>Défi 3 (bonus, plus dur) — Préparer les images pour plus tard</h4>
+    <p>Tes images sont aujourd'hui importées localement (<code>import sourisGaming from "./assets/..."</code>). MongoDB ne peut stocker que du texte — déplace tes images dans <span class="file-tag">public/</span> et mets à jour <span class="file-tag">seed.js</span> pour stocker juste leur chemin en texte (ex. <code>"/images/souris-gaming.png"</code>) dans le champ <code>images</code>. L'adaptation du composant d'affichage viendra quand on rebranchera React.</p>
+  </div>
+
+  <p style="margin-top:40px; color:#94a3b8; font-size:0.9rem;">📌 Prochaine séance (16) : JWT — l'authentification. Le rebranchement de <span class="file-tag">DetailProductPage.jsx</span> sur <code>_id</code> viendra juste après, avec le reste du frontend.</p>
+
+</div>
+</body>
+</html>
