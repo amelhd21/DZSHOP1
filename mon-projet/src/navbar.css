@@ -1,0 +1,105 @@
+
+.bar-navigation {
+    background-color: #212529;
+    height: 80px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 0 30px;
+    box-sizing: border-box;
+}
+
+.logo {
+    color: white;
+    font-size: 25px;
+    font-family: 'Lucida Sans', sans-serif;
+    font-weight: bold;
+    margin-right: 50px; 
+}
+
+.liste {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+
+    list-style: none;
+    font-size: 20px;
+    font-family: 'Lucida Sans', sans-serif;
+    font-weight: bold;
+
+    margin: 0;
+    padding: 0;
+}
+
+.liste a {
+    text-decoration: none;
+    color:#6c757d;
+}
+
+.liste a:hover {
+    color:white;
+}
+
+.buttons {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-left: 500px;
+}
+
+.bar-navigation button,
+.bar-navigation a.btn-primary {
+    border-radius: 5px;
+    background-color: #212529;
+    font-size: 20px;
+    height: 50px;
+    width: 150px;
+    border-color: white;
+    color: white !important;
+
+}
+
+.bar-navigation button:hover,
+.bar-navigation a.btn-primary:hover {
+    background-color: white;
+    color: rgb(66, 63, 62)!important;
+}
+
+.bar-navigation a {
+  color:#6c757d;
+  text-decoration: none;
+}
+
+.bar-navigation a:visited {
+  color:#6c757d;
+}
+
+.bar-navigation a:hover {
+  color: #ffffff;
+}
+
+.bar-navigation a:active {
+  color: #6c757d;
+}
+
+.dropdown button {
+    background-color: white !important;
+    color: #222 !important;
+    border-color: white;
+}
+
+.dropdown-menu {
+    background-color: white;
+}
+
+.dropdown-item {
+    color: black !important;
+}
+
+.dropdown-item:hover {
+    background-color: #f1f1f1;
+}

@@ -1,0 +1,273 @@
+.panier {
+  width: 100%;
+  min-height: 100vh;
+  background: #f7f7f7;
+  padding: 80px 20px;
+  box-sizing: border-box;
+}
+
+.panier h1 {
+  display: none;
+}
+
+
+.panier > p {
+  max-width: 1050px;
+  margin: auto;
+  font-size: 18px;
+}
+
+
+/* Conteneur produit */
+
+.panier-produit {
+
+  max-width: 1050px;
+  margin: auto;
+
+  min-height: 170px;
+
+  background: white;
+
+  border-bottom: 1px solid #e5e5e5;
+
+  display: flex;
+  align-items: center;
+
+  padding: 25px 35px;
+
+  gap: 25px;
+
+  position: relative;
+}
+
+
+
+.panier:before {
+
+  content: " 🛒 LISTE DES PRODUITS ";
+
+  display: block;
+
+  max-width: 1050px;
+
+  margin: auto;
+
+  background: white;
+
+  padding: 30px 35px;
+
+  font-size: 22px;
+
+  font-weight: 700;
+
+  border-bottom: 1px solid #ddd;
+
+}
+
+
+/* Image */
+
+.panier-produit img {
+
+  width: 120px;
+
+  height: 120px;
+
+  object-fit: cover;
+
+  border-radius: 10px;
+
+}
+
+
+/* Nom */
+
+.panier-produit h2 {
+
+  flex: 1;
+
+  font-size: 22px;
+
+  font-weight: 400;
+
+  color: #555;
+
+  margin: 0;
+
+}
+
+
+/* Prix */
+
+.panier-produit p {
+
+  order: 3;
+
+  width: 180px;
+
+  text-align: right;
+
+  font-size: 20px;
+
+  color: #555;
+
+}
+
+
+/* Quantité */
+
+.panier-produit div {
+
+  position: absolute;
+
+  left: 220px;
+
+  bottom: 35px;
+
+  display: flex;
+
+  align-items: center;
+
+  border: 1px solid #ddd;
+
+  border-radius: 25px;
+
+  overflow: hidden;
+
+}
+
+
+.panier-produit div button {
+
+  width: 45px;
+
+  height: 40px;
+
+  border: none;
+
+  background: white;
+
+  font-size: 22px;
+
+  cursor: pointer;
+
+}
+
+
+.panier-produit div span {
+
+  width: 45px;
+
+  text-align: center;
+
+}
+
+
+/* Bouton supprimer */
+
+.panier-produit > button {
+
+  position: absolute;
+
+  left: 10px;
+
+  top: 70px;
+
+  border: none;
+
+  background: transparent;
+
+  font-size: 0;
+
+  cursor: pointer;
+
+}
+
+
+.panier-produit > button:before {
+
+  content: "×";
+
+  font-size: 30px;
+
+  color: #777;
+
+}
+
+
+
+/* Total */
+
+.panier h2:last-child {
+
+  max-width: 1050px;
+
+  margin: auto;
+
+  background: white;
+
+  padding: 30px 35px;
+
+  text-align: right;
+
+  color: #e83b7c;
+
+  font-size: 25px;
+
+}
+
+
+@media(max-width:700px){
+
+.panier-produit{
+
+ flex-wrap: wrap;
+
+}
+
+
+.panier-produit div{
+
+ position: static;
+
+}
+
+
+.panier-produit p{
+
+ width:auto;
+
+}
+
+}
+/* ================================
+   ACHETER MAINTENANT
+================================ */
+
+.buy-now-btn {
+  width: 100%;
+
+  height: 46px;
+
+  margin-top: 15px;
+
+  border: none;
+
+  background:#1678f7c0;
+
+  color: white;
+
+  font-size: 30px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: background 0.2s ease;
+}
+
+.buy-now-btn:hover {
+  background: #e60013;
+}
+
