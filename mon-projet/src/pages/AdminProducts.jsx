@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect} from "react";
 import AdminSidebar from "../components/AdminSidebar";
 import {
   FaPlus,
@@ -15,24 +15,18 @@ function AdminProducts() {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
 
-  const [products, setProducts] = useState([
-    {
-      id: "p1",
-      title: "SOURIS GAMING LOGITECH G102",
-      price: 5500,
-      img: "",
-      images: [],
-      dec: "Souris gaming Logitech G102"
-    },
-    {
-      id: "p2",
-      title: "Clavier Gaming",
-      price: 7800,
-      img: "",
-      images: [],
-      dec: "Clavier gaming mécanique"
-    }
-  ]);
+  const [products, setProducts] = useState([]);
+
+useEffect(() => {
+  fetch("http://localhost:5000/api/products")
+    .then((res) => res.json())
+    .then((data) => {
+      setProducts(data);
+    })
+    .catch((err) => {
+      console.error("Erreur chargement produits :", err);
+    });
+}, []);
 
   const emptyForm = {
     id: "",
@@ -124,43 +118,102 @@ function AdminProducts() {
      IMAGE PRINCIPALE
   ========================= */
 
-  function handleMainImage(e) {
 
-    const file = e.target.files[0];
 
-    if (!file) {
-      return;
+async function handleMainImage(e) {
+
+  const file = e.target.files[0];
+
+  if (!file) {
+    return;
+  }
+
+  try {
+    const data = new FormData();
+    data.append("image", file);
+
+    const response = await fetch(
+      "http://localhost:5000/api/upload",
+      {
+        method: "POST",
+        body: data
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Erreur upload image");
     }
 
-    const imageUrl = URL.createObjectURL(file);
+    const result = await response.json();
 
-    setFormData({
-      ...formData,
-      img: imageUrl
-    });
+    setFormData((prev) => ({
+      ...prev,
+      img: "http://localhost:5000" + result.imageUrl
+    }));
+
+  } catch (error) {
+    console.error("Erreur upload image :", error);
+    alert("Impossible d'envoyer l'image.");
   }
+}
 
   /* =========================
      IMAGES SUPPLÉMENTAIRES
   ========================= */
 
-  function handleAdditionalImages(e) {
+ async function handleAdditionalImages(e) {
 
-    const files = Array.from(e.target.files);
+  const files = Array.from(e.target.files);
 
-    if (files.length === 0) {
-      return;
+  if (files.length === 0) {
+    return;
+  }
+
+  try {
+
+    const imageUrls = [];
+
+    for (const file of files) {
+
+      const data = new FormData();
+      data.append("image", file);
+
+      const response = await fetch(
+        "http://localhost:5000/api/upload",
+        {
+          method: "POST",
+          body: data
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Erreur upload image");
+      }
+
+      const result = await response.json();
+
+      imageUrls.push(
+        "http://localhost:5000" + result.imageUrl
+      );
     }
 
-    const imageUrls = files.map((file) =>
-      URL.createObjectURL(file)
+    setFormData((prev) => ({
+      ...prev,
+      images: imageUrls
+    }));
+
+  } catch (error) {
+
+    console.error(
+      "Erreur upload images :",
+      error
     );
 
-    setFormData({
-      ...formData,
-      images: imageUrls
-    });
+    alert(
+      "Impossible d'envoyer les images."
+    );
   }
+}
 
   /* =========================
      AJOUT / MODIFICATION
@@ -228,10 +281,34 @@ function AdminProducts() {
         dec: formData.dec.trim()
       };
 
-      setProducts([
-        ...products,
-        newProduct
-      ]);
+      fetch("http://localhost:5000/api/products", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify(newProduct)
+})
+  .then((res) => {
+    if (!res.ok) {
+      throw new Error("Erreur lors de l'ajout du produit");
+    }
+
+    return res.json();
+  })
+  .then((createdProduct) => {
+    setProducts([
+      ...products,
+      createdProduct
+    ]);
+
+    closeForm();
+  })
+  .catch((err) => {
+    console.error("Erreur ajout produit :", err);
+    alert("Impossible d'ajouter le produit.");
+  });
+
+return;
     }
 
     /* MODIFICATION */

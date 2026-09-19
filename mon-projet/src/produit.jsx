@@ -1,4 +1,4 @@
-import React, { useState,useContext } from "react";
+import React , { useState, useContext, useEffect } from "react"; 
 import { CartContext } from "./contexte/CartContext";
 
 import "./product.css";
@@ -564,6 +564,19 @@ function ProductCard({ id, title, price, img, dec }) {
 // ===============================
 
 function ProductList() {
+  const [apiProducts, setApiProducts] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:5000/api/products")
+      .then((res) => res.json())
+      .then((data) => {
+        setApiProducts(data);
+      })
+      .catch((err) => {
+        console.error("Erreur chargement produits :", err);
+      });
+  }, []);
+
 
   // ===============================
   // RECHERCHE
@@ -589,7 +602,7 @@ function ProductList() {
   // FILTRAGE + RECHERCHE + TRI
   // ===============================
 
-  const filteredProducts = products
+  const filteredProducts = apiProducts
     .filter((product) => {
 
       const searchValue = search

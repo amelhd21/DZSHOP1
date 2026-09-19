@@ -1,28 +1,56 @@
 
 import { Link, useParams } from 'react-router-dom'
-import { useState,useContext } from 'react'
+import { useState,useContext,useEffect} from 'react'
 import { CartContext } from './contexte/CartContext'
-import { products } from './produit.jsx'
 import './DetailProductPage.css'
 
 function ProductDetailPage() {
   const { id } = useParams()
   const { addToCart } = useContext(CartContext)
+  const [produit1, setProduit1] = useState(null)
+const [loading, setLoading] = useState(true)
+
+useEffect(() => {
+  fetch("http://localhost:5000/api/products")
+    .then((res) => res.json())
+    .then((data) => {
+      const produitTrouve = data.find(function (p) {
+        return String(p.id) === String(id)
+      })
+
+      setProduit1(produitTrouve)
+      setLoading(false)
+    })
+    .catch((err) => {
+      console.error("Erreur chargement produit :", err)
+      setLoading(false)
+    })
+}, [id])
   const [ajoute, setAjoute] = useState(false) 
 
  function ajouterAuPanier() {
   addToCart(produit1)   // ① on ajoute le produit
   setAjoute(true)      // ② on affiche la confirmation
 }
-  const produit1 = products.find(function (p) {
-    return String(p.id) === String(id)
-  })
+ 
 
   const [quantite, setQuantite] = useState(1)
 
-  const [imageActive, setImageActive] = useState(
-    produit1?.img || ''
+const [imageActive, setImageActive] = useState('')
+
+useEffect(() => {
+  if (produit1) {
+    setImageActive(produit1.img)
+  }
+}, [produit1])
+
+if (loading) {
+  return (
+    <div className="product-not-found">
+      <p>Chargement du produit...</p>
+    </div>
   )
+}
 
   if (!produit1) {
     return (
