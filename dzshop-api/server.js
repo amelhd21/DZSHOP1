@@ -21,7 +21,7 @@ app.use(cors())
 app.use(express.json())
 app.use("/uploads", express.static("uploads"));
 app.use('/api/products', productRoutes)
-app.use('/api/uploads', uploadRoutes)
+app.use('/api/upload', uploadRoutes)
 app.get('/', function(req, res) {
   res.json({ message: 'API DZShop en ligne' })
 })

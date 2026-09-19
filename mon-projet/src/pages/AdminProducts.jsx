@@ -313,37 +313,50 @@ return;
 
     /* MODIFICATION */
 
-    else {
+    if (editingId) {
 
-      setProducts(
-        products.map((product) =>
+  const updatedProduct = {
+    id: formData.id.trim(),
+    title: formData.title.trim(),
+    price: price,
+    img: formData.img,
+    images: formData.images,
+    dec: formData.dec.trim()
+  };
 
+  fetch(`http://localhost:5000/api/products/${editingId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(updatedProduct)
+  })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("Erreur lors de la modification");
+      }
+
+      return res.json();
+    })
+    .then((modifiedProduct) => {
+
+      setProducts((prevProducts) =>
+        prevProducts.map((product) =>
           product.id === editingId
-
-            ? {
-                id: product.id,
-
-                title:
-                  formData.title.trim(),
-
-                price: price,
-
-                img:
-                  formData.img,
-
-                images:
-                  formData.images,
-
-                dec:
-                  formData.dec.trim()
-              }
-
+            ? modifiedProduct
             : product
         )
       );
-    }
 
-    closeForm();
+      closeForm();
+    })
+    .catch((err) => {
+      console.error("Erreur modification produit :", err);
+      alert("Impossible de modifier le produit.");
+    });
+
+  return;
+}
   }
 
   /* =========================
@@ -352,22 +365,48 @@ return;
 
   function deleteProduct(id) {
 
-    const confirmation =
-      window.confirm(
-        "Voulez-vous vraiment supprimer ce produit ?"
+  const confirmation = window.confirm(
+    "Voulez-vous vraiment supprimer ce produit ?"
+  );
+
+  if (!confirmation) {
+    return;
+  }
+
+  fetch(`http://localhost:5000/api/products/${id}`, {
+    method: "DELETE"
+  })
+    .then((res) => {
+
+      if (!res.ok) {
+        throw new Error("Erreur lors de la suppression");
+      }
+
+      return res.json();
+    })
+    .then(() => {
+
+      setProducts((prevProducts) =>
+        prevProducts.filter(
+          (product) => product.id !== id
+        )
       );
 
-    if (!confirmation) {
-      return;
-    }
+    })
+    .catch((err) => {
 
-    setProducts(
-      products.filter(
-        (product) =>
-          product.id !== id
-      )
-    );
-  }
+      console.error(
+        "Erreur suppression produit :",
+        err
+      );
+
+      alert(
+        "Impossible de supprimer le produit."
+      );
+
+    });
+}
+
 
   return (
 
