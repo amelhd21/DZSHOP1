@@ -5,7 +5,7 @@ import dotenv from 'dotenv'
 import productRoutes from './routes/products.js'
 import uploadRoutes from './routes/upload.js'
 import authRoutes from './routes/auth.js'
-
+import orderRoutes from './routes/orders.js'
 dotenv.config()
 
 // Sans phrase secrète, on ne démarre pas : mieux vaut planter que d'être vulnérable
@@ -35,6 +35,7 @@ app.use('/uploads', express.static('uploads'))
 app.use('/api/products', productRoutes)
 app.use('/api/upload', uploadRoutes)
 app.use('/api/auth', authRoutes)
+app.use('/api/orders', orderRoutes)
 
 app.get('/', function (req, res) {
   res.json({ message: 'API DZShop en ligne' })

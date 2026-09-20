@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+
 import { AuthContext } from "../contexte/AuthContext";
 import {
   FaUser,
@@ -9,6 +9,8 @@ import {
   FaShoppingCart
 } from "react-icons/fa";
 import "./ProfilePage.css";
+import { useContext, useState, useEffect } from "react";
+import { apiFetch, lireJson } from "../api";
 
 function ProfilePage() {
 
@@ -25,31 +27,19 @@ function ProfilePage() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   
-  const [orders] = useState([
-  {
-    id: "CMD001",
-    date: "16/09/2026",
-    products: "Souris Gaming Logitech G102",
-    total: 5500,
-    status: "Livrée"
-  },
-  {
-    id: "CMD002",
-    date: "15/09/2026",
-    products: "Clavier Gaming",
-    total: 7800,
-    status: "En attente"
-  },
-  {
-    id: "CMD003",
-    date: "14/09/2026",
-    products: "Casque Bluetooth",
-    total: 9900,
-    status: "Livrée"
-  }
-]);
+  const [orders, setOrders] = useState([]);
+  const [chargement, setChargement] = useState(true);
 
-  function handlePasswordChange(e) {
+  // On charge MES commandes depuis le serveur
+  useEffect(() => {
+    apiFetch("/api/orders/my")
+      .then(lireJson)
+      .then((data) => setOrders(data))
+      .catch(() => {})
+      .finally(() => setChargement(false));
+  }, []);
+
+  async function handlePasswordChange(e) {
 
     e.preventDefault();
 
@@ -75,23 +65,29 @@ function ProfilePage() {
       return;
     }
 
-    /*
-      Pour le moment nous sommes uniquement côté frontend.
+    try {
 
-      Plus tard, avec le backend JWT + bcrypt,
-      nous enverrons ici :
+      await lireJson(
+        await apiFetch("/api/auth/password", {
+          method: "PUT",
+          body: JSON.stringify({
+            currentPassword: currentPassword,
+            newPassword: newPassword
+          })
+        })
+      );
 
-      - currentPassword
-      - newPassword
-    */
+      setMessage("Votre mot de passe a bien été modifié.");
 
-    setMessage(
-      "Validation réussie. Le changement réel sera activé avec le backend."
-    );
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
 
-    setCurrentPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
+    } catch (err) {
+
+      setError(err.message);
+
+    }
   }
 
   if (!user) {
@@ -325,7 +321,11 @@ function ProfilePage() {
 
 
   <div className="orders-list">
+{chargement && <p>Chargement...</p>}
 
+{!chargement && orders.length === 0 && (
+  <p>Vous n'avez pas encore passé de commande.</p>
+)}
     {orders.map(order => (
 
       <div
