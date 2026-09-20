@@ -22,7 +22,7 @@ function RegisterPage() {
 
   const navigate = useNavigate();
 
-function envoyer(e) {
+async function envoyer(e) {
 
   e.preventDefault();
 
@@ -35,8 +35,31 @@ function envoyer(e) {
     setErreur("Les deux mots de passe ne sont pas identiques");
     return;
   }
-  register(nom, email);
-  navigate("/");
+  if (!wilaya || wilaya.startsWith("Sélectionnez")) {
+    setErreur("Veuillez choisir votre wilaya");
+    return;
+  }
+
+  setErreur("");
+
+  try {
+
+    await register({
+      nom: nom,
+      email: email,
+      password: mdp,
+      telephone: telephone,
+      wilaya: wilaya,
+      adresse: adresse
+    });
+
+    navigate("/");
+
+  } catch (err) {
+
+    setErreur(err.message);
+
+  }
 }
 
 

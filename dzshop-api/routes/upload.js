@@ -1,39 +1,71 @@
-import express from "express";
-import multer from "multer";
-import path from "path";
+import express from 'express'
+import multer from 'multer'
+import path from 'path'
+import fs from 'fs'
+import { v2 as cloudinary } from 'cloudinary'
+import { protect, isAdmin } from '../middleware/auth.js'
 
-const router = express.Router();
+const router = express.Router()
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
-
-  filename: function (req, file, cb) {
-    const nomUnique =
-      Date.now() +
-      "-" +
-      Math.round(Math.random() * 1E9) +
-      path.extname(file.originalname);
-
-    cb(null, nomUnique);
-  }
-});
-
+// Le fichier reste en mémoire (buffer) le temps de l'envoyer où on veut.
 const upload = multer({
-  storage: storage
-});
-
-router.post("/", upload.single("image"), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({
-      erreur: "Aucune image envoyée"
-    });
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 3 * 1024 * 1024 },              // 3 Mo maximum
+  fileFilter: function (req, file, cb) {
+    if (!file.mimetype.startsWith('image/')) {
+      return cb(new Error('Seules les images sont acceptées'))
+    }
+    cb(null, true)
   }
+})
 
-  res.status(201).json({
-    imageUrl: "/uploads/" + req.file.filename
-  });
-});
+// Envoi vers Cloudinary (utilisé en ligne, car le disque de Render est effacé
+// à chaque redéploiement). cloudinary lit tout seul la variable CLOUDINARY_URL.
+function envoyerVersCloudinary(buffer) {
+  return new Promise(function (resolve, reject) {
+    const flux = cloudinary.uploader.upload_stream(
+      { folder: 'dzshop' },
+      function (err, resultat) {
+        if (err) reject(err)
+        else resolve(resultat)
+      }
+    )
+    flux.end(buffer)
+  })
+}
 
-export default router;
+// Seul un admin connecté peut envoyer une image
+router.post('/', protect, isAdmin, upload.single('image'), async function (req, res) {
+
+  try {
+
+    if (!req.file) {
+      return res.status(400).json({ message: 'Aucune image envoyée' })
+    }
+
+    // 1) EN LIGNE : Cloudinary
+    if (process.env.CLOUDINARY_URL) {
+      const resultat = await envoyerVersCloudinary(req.file.buffer)
+      return res.status(201).json({ imageUrl: resultat.secure_url })
+    }
+
+    // 2) EN LOCAL : dossier uploads/
+    fs.mkdirSync('uploads', { recursive: true })
+
+    const nom = Date.now() + '-' + Math.round(Math.random() * 1e9) + path.extname(req.file.originalname)
+    fs.writeFileSync(path.join('uploads', nom), req.file.buffer)
+
+    // On renvoie une adresse COMPLÈTE : le front n'a plus rien à recoller
+    res.status(201).json({ imageUrl: req.protocol + '://' + req.get('host') + '/uploads/' + nom })
+
+  } catch (err) {
+    res.status(500).json({ message: err.message })
+  }
+})
+
+// Erreurs de multer (fichier trop gros, pas une image...) : message clair en JSON
+router.use(function (err, req, res, next) {
+  res.status(400).json({ message: err.message })
+})
+
+export default router

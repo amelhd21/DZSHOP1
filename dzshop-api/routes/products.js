@@ -1,5 +1,7 @@
 import express from 'express'
 import Product from '../models/Product.js'
+import { protect, isAdmin } from '../middleware/auth.js'
+
 
 const router = express.Router()
 
@@ -53,7 +55,7 @@ router.get('/:id', async function(req, res) {
 })
 
 // CRÉER un produit
-router.post('/', async function(req, res) {
+router.post('/',      protect, isAdmin, async function(req, res) {
 
   try {
 
@@ -73,7 +75,7 @@ router.post('/', async function(req, res) {
 
 
 // MODIFIER un produit
-router.put('/:id', async function(req, res) {
+router.put('/:id',      protect, isAdmin, async function(req, res) {
 
   try {
 
@@ -81,7 +83,7 @@ router.put('/:id', async function(req, res) {
       { id: req.params.id },
       req.body,
       {
-        new: true,
+       returnDocument: 'after',
         runValidators: true
       }
     )
@@ -108,7 +110,7 @@ router.put('/:id', async function(req, res) {
 
 
 // SUPPRIMER un produit
-router.delete('/:id', async function(req, res) {
+router.delete('/:id', protect, isAdmin, async function(req, res) {
 
   try {
 

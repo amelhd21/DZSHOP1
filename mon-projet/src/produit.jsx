@@ -1,12 +1,8 @@
 import React , { useState, useContext, useEffect } from "react"; 
 import { CartContext } from "./contexte/CartContext";
-
 import "./product.css";
-
-
-
 import { useNavigate } from 'react-router-dom';
-
+import { apiFetch } from "./api";
 
 
 // ===============================
@@ -71,7 +67,7 @@ function ProductList() {
   const [apiProducts, setApiProducts] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/products")
+    apiFetch("/api/products")
       .then((res) => res.json())
       .then((data) => {
         setApiProducts(data);

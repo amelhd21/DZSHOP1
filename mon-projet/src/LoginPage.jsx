@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { useNavigate, Link, NavLink } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 import { AuthContext } from "./contexte/AuthContext";
 
 
@@ -13,17 +13,22 @@ function LoginPage() {
 
   const navigate = useNavigate();
 
-  function envoyer(e) {
+  async function envoyer(e) {
 
     e.preventDefault();
 
-    if (login(email, mdp)) {
+    setErreur("");
 
-      navigate("/"); // Redirection vers la page d'accueil après connexion réussie
+    try {
 
-    } else {
+      const utilisateur = await login(email, mdp);
 
-      setErreur("Email ou mot de passe incorrect");
+      // L'admin arrive sur son dashboard, le client sur l'accueil
+      navigate(utilisateur.role === "admin" ? "/admin" : "/");
+
+    } catch (err) {
+
+      setErreur(err.message);
 
     }
 

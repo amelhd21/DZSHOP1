@@ -3,6 +3,8 @@ import { Link, useParams } from 'react-router-dom'
 import { useState,useContext,useEffect} from 'react'
 import { CartContext } from './contexte/CartContext'
 import './DetailProductPage.css'
+import { apiFetch } from './api'      // à ajouter avec les autres imports
+
 
 function ProductDetailPage() {
   const { id } = useParams()
@@ -11,14 +13,10 @@ function ProductDetailPage() {
 const [loading, setLoading] = useState(true)
 
 useEffect(() => {
-  fetch("http://localhost:5000/api/products")
-    .then((res) => res.json())
+  apiFetch("/api/products/" + id)
+    .then((res) => (res.ok ? res.json() : null))
     .then((data) => {
-      const produitTrouve = data.find(function (p) {
-        return String(p.id) === String(id)
-      })
-
-      setProduit1(produitTrouve)
+      setProduit1(data)
       setLoading(false)
     })
     .catch((err) => {

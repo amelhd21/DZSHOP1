@@ -1,4 +1,4 @@
-import { useState,useEffect} from "react";
+import { useState, useEffect } from "react";
 import AdminSidebar from "../components/AdminSidebar";
 import {
   FaPlus,
@@ -8,6 +8,7 @@ import {
   FaTimes,
   FaCloudUploadAlt
 } from "react-icons/fa";
+import { apiFetch } from "../api";
 
 function AdminProducts() {
 
@@ -17,16 +18,16 @@ function AdminProducts() {
 
   const [products, setProducts] = useState([]);
 
-useEffect(() => {
-  fetch("http://localhost:5000/api/products")
-    .then((res) => res.json())
-    .then((data) => {
-      setProducts(data);
-    })
-    .catch((err) => {
-      console.error("Erreur chargement produits :", err);
-    });
-}, []);
+  useEffect(() => {
+    apiFetch("/api/products")
+      .then((res) => res.json())
+      .then((data) => {
+        setProducts(data);
+      })
+      .catch((err) => {
+        console.error("Erreur chargement produits :", err);
+      });
+  }, []);
 
   const emptyForm = {
     id: "",
@@ -118,73 +119,22 @@ useEffect(() => {
      IMAGE PRINCIPALE
   ========================= */
 
+  async function handleMainImage(e) {
 
+    const file = e.target.files[0];
 
-async function handleMainImage(e) {
-
-  const file = e.target.files[0];
-
-  if (!file) {
-    return;
-  }
-
-  try {
-    const data = new FormData();
-    data.append("image", file);
-
-    const response = await fetch(
-      "http://localhost:5000/api/upload",
-      {
-        method: "POST",
-        body: data
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Erreur upload image");
+    if (!file) {
+      return;
     }
 
-    const result = await response.json();
-
-    setFormData((prev) => ({
-      ...prev,
-      img: "http://localhost:5000" + result.imageUrl
-    }));
-
-  } catch (error) {
-    console.error("Erreur upload image :", error);
-    alert("Impossible d'envoyer l'image.");
-  }
-}
-
-  /* =========================
-     IMAGES SUPPLÉMENTAIRES
-  ========================= */
-
- async function handleAdditionalImages(e) {
-
-  const files = Array.from(e.target.files);
-
-  if (files.length === 0) {
-    return;
-  }
-
-  try {
-
-    const imageUrls = [];
-
-    for (const file of files) {
-
+    try {
       const data = new FormData();
       data.append("image", file);
 
-      const response = await fetch(
-        "http://localhost:5000/api/upload",
-        {
-          method: "POST",
-          body: data
-        }
-      );
+      const response = await apiFetch("/api/upload", {
+        method: "POST",
+        body: data
+      });
 
       if (!response.ok) {
         throw new Error("Erreur upload image");
@@ -192,28 +142,69 @@ async function handleMainImage(e) {
 
       const result = await response.json();
 
-      imageUrls.push(
-        "http://localhost:5000" + result.imageUrl
-      );
+      setFormData((prev) => ({
+        ...prev,
+        img: result.imageUrl
+      }));
+
+    } catch (error) {
+      console.error("Erreur upload image :", error);
+      alert("Impossible d'envoyer l'image.");
+    }
+  }
+
+  /* =========================
+     IMAGES SUPPLÉMENTAIRES
+  ========================= */
+
+  async function handleAdditionalImages(e) {
+
+    const files = Array.from(e.target.files);
+
+    if (files.length === 0) {
+      return;
     }
 
-    setFormData((prev) => ({
-      ...prev,
-      images: imageUrls
-    }));
+    try {
 
-  } catch (error) {
+      const imageUrls = [];
 
-    console.error(
-      "Erreur upload images :",
-      error
-    );
+      for (const file of files) {
 
-    alert(
-      "Impossible d'envoyer les images."
-    );
+        const data = new FormData();
+        data.append("image", file);
+
+        const response = await apiFetch("/api/upload", {
+          method: "POST",
+          body: data
+        });
+
+        if (!response.ok) {
+          throw new Error("Erreur upload image");
+        }
+
+        const result = await response.json();
+
+        imageUrls.push(result.imageUrl);
+      }
+
+      setFormData((prev) => ({
+        ...prev,
+        images: imageUrls
+      }));
+
+    } catch (error) {
+
+      console.error(
+        "Erreur upload images :",
+        error
+      );
+
+      alert(
+        "Impossible d'envoyer les images."
+      );
+    }
   }
-}
 
   /* =========================
      AJOUT / MODIFICATION
@@ -281,82 +272,82 @@ async function handleMainImage(e) {
         dec: formData.dec.trim()
       };
 
-      fetch("http://localhost:5000/api/products", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify(newProduct)
-})
-  .then((res) => {
-    if (!res.ok) {
-      throw new Error("Erreur lors de l'ajout du produit");
-    }
+      apiFetch("/api/products", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(newProduct)
+      })
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error("Erreur lors de l'ajout du produit");
+          }
 
-    return res.json();
-  })
-  .then((createdProduct) => {
-    setProducts([
-      ...products,
-      createdProduct
-    ]);
+          return res.json();
+        })
+        .then((createdProduct) => {
+          setProducts([
+            ...products,
+            createdProduct
+          ]);
 
-    closeForm();
-  })
-  .catch((err) => {
-    console.error("Erreur ajout produit :", err);
-    alert("Impossible d'ajouter le produit.");
-  });
+          closeForm();
+        })
+        .catch((err) => {
+          console.error("Erreur ajout produit :", err);
+          alert("Impossible d'ajouter le produit.");
+        });
 
-return;
+      return;
     }
 
     /* MODIFICATION */
 
     if (editingId) {
 
-  const updatedProduct = {
-    id: formData.id.trim(),
-    title: formData.title.trim(),
-    price: price,
-    img: formData.img,
-    images: formData.images,
-    dec: formData.dec.trim()
-  };
+      const updatedProduct = {
+        id: formData.id.trim(),
+        title: formData.title.trim(),
+        price: price,
+        img: formData.img,
+        images: formData.images,
+        dec: formData.dec.trim()
+      };
 
-  fetch(`http://localhost:5000/api/products/${editingId}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(updatedProduct)
-  })
-    .then((res) => {
-      if (!res.ok) {
-        throw new Error("Erreur lors de la modification");
-      }
+      apiFetch(`/api/products/${editingId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(updatedProduct)
+      })
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error("Erreur lors de la modification");
+          }
 
-      return res.json();
-    })
-    .then((modifiedProduct) => {
+          return res.json();
+        })
+        .then((modifiedProduct) => {
 
-      setProducts((prevProducts) =>
-        prevProducts.map((product) =>
-          product.id === editingId
-            ? modifiedProduct
-            : product
-        )
-      );
+          setProducts((prevProducts) =>
+            prevProducts.map((product) =>
+              product.id === editingId
+                ? modifiedProduct
+                : product
+            )
+          );
 
-      closeForm();
-    })
-    .catch((err) => {
-      console.error("Erreur modification produit :", err);
-      alert("Impossible de modifier le produit.");
-    });
+          closeForm();
+        })
+        .catch((err) => {
+          console.error("Erreur modification produit :", err);
+          alert("Impossible de modifier le produit.");
+        });
 
-  return;
-}
+      return;
+    }
   }
 
   /* =========================
@@ -365,48 +356,47 @@ return;
 
   function deleteProduct(id) {
 
-  const confirmation = window.confirm(
-    "Voulez-vous vraiment supprimer ce produit ?"
-  );
+    const confirmation = window.confirm(
+      "Voulez-vous vraiment supprimer ce produit ?"
+    );
 
-  if (!confirmation) {
-    return;
+    if (!confirmation) {
+      return;
+    }
+
+    apiFetch(`/api/products/${id}`, {
+      method: "DELETE"
+    })
+      .then((res) => {
+
+        if (!res.ok) {
+          throw new Error("Erreur lors de la suppression");
+        }
+
+        return res.json();
+      })
+      .then(() => {
+
+        setProducts((prevProducts) =>
+          prevProducts.filter(
+            (product) => product.id !== id
+          )
+        );
+
+      })
+      .catch((err) => {
+
+        console.error(
+          "Erreur suppression produit :",
+          err
+        );
+
+        alert(
+          "Impossible de supprimer le produit."
+        );
+
+      });
   }
-
-  fetch(`http://localhost:5000/api/products/${id}`, {
-    method: "DELETE"
-  })
-    .then((res) => {
-
-      if (!res.ok) {
-        throw new Error("Erreur lors de la suppression");
-      }
-
-      return res.json();
-    })
-    .then(() => {
-
-      setProducts((prevProducts) =>
-        prevProducts.filter(
-          (product) => product.id !== id
-        )
-      );
-
-    })
-    .catch((err) => {
-
-      console.error(
-        "Erreur suppression produit :",
-        err
-      );
-
-      alert(
-        "Impossible de supprimer le produit."
-      );
-
-    });
-}
-
 
   return (
 
