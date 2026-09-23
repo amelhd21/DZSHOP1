@@ -1,6 +1,7 @@
 import { useState, useContext } from "react";
-import { useNavigate, NavLink } from "react-router-dom";
+import { useNavigate, NavLink, useLocation } from "react-router-dom";
 import { AuthContext } from "./contexte/AuthContext";
+import { GoogleLogin } from "@react-oauth/google";
 
 
 function LoginPage() {
@@ -9,10 +10,10 @@ function LoginPage() {
   const [mdp, setMdp] = useState("");
   const [erreur, setErreur] = useState("");
 
-  const { login } = useContext(AuthContext);
+  const { login,loginGoogle } = useContext(AuthContext);
 
   const navigate = useNavigate();
-
+  const location = useLocation();
   async function envoyer(e) {
 
     e.preventDefault();
@@ -24,7 +25,8 @@ function LoginPage() {
       const utilisateur = await login(email, mdp);
 
       // L'admin arrive sur son dashboard, le client sur l'accueil
-      navigate(utilisateur.role === "admin" ? "/admin" : "/");
+      const retour = location.state?.from || "/";
+navigate(utilisateur.role === "admin" ? "/admin" : retour);
 
     } catch (err) {
 
@@ -33,6 +35,18 @@ function LoginPage() {
     }
 
   }
+  async function connexionGoogle(credentialResponse) {
+  try {
+    setErreur("");
+
+    const utilisateur = await loginGoogle(credentialResponse.credential);
+
+    navigate(utilisateur.role === "admin" ? "/admin" : "/");
+  } catch (err) {
+    setErreur(err.message);
+  }
+}
+
   return (
     <div className="login-container">
 
@@ -72,7 +86,15 @@ function LoginPage() {
         </button>
 
       </form>
-
+      <div style={{ marginTop: "20px" }}>
+       
+  <GoogleLogin
+    onSuccess={connexionGoogle}
+    onError={() => setErreur("Connexion Google impossible")}
+    text="continue_with"
+    shape="rectangular"
+  />
+</div>
 
       <p className="text-center mt-3">
         Pas de compte ?{" "}

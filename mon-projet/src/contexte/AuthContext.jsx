@@ -26,11 +26,16 @@ export function AuthProvider({ children }) {
     setUser(data.user);
   }
 
-  function logout() {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    setUser(null);
+   function logout() {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+
+  if (window.google?.accounts?.id) {
+    window.google.accounts.id.disableAutoSelect();
   }
+
+  setUser(null);
+}
 
   // Au démarrage, on demande au serveur "qui suis-je ?" :
   // si l'admin m'a changé de rôle ou bloqué, je le sais tout de suite.
@@ -69,6 +74,17 @@ export function AuthProvider({ children }) {
     sauvegarder(data);
     return data.user;
   }
+async function loginGoogle(credential) {
+  const data = await lireJson(
+    await apiFetch("/api/auth/google", {
+      method: "POST",
+      body: JSON.stringify({ credential: credential })
+    })
+  );
+
+  sauvegarder(data);
+  return data.user;
+}
 
   async function register(infos) {
     const data = await lireJson(
@@ -82,7 +98,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout }}>
+    <AuthContext.Provider value={{ user, login, loginGoogle, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,9 +1,12 @@
+import googleAuthLibrary from 'google-auth-library'
 import express from 'express'
 import jwt from 'jsonwebtoken'
 import User from '../models/User.js'
 import { protect } from '../middleware/auth.js'
 
 const router = express.Router()
+const { OAuth2Client } = googleAuthLibrary
+const googleClient =new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 
 // Fabrique le "bracelet" (token) : il contient l'id de l'utilisateur, valable 7 jours
 function creerToken(user) {
@@ -39,6 +42,70 @@ router.post('/register', async function (req, res) {
 
   } catch (err) {
     res.status(400).json({ message: err.message })
+  }
+})
+// CONNEXION / INSCRIPTION AVEC GOOGLE
+router.post('/google', async function (req, res) {
+
+  try {
+
+    const { credential } = req.body
+
+    if (!credential) {
+      return res.status(400).json({ message: 'Jeton Google manquant' })
+    }
+
+    // Google vérifie que le jeton est authentique
+    const ticket = await googleClient.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID
+    })
+
+    const payload = ticket.getPayload()
+
+    if (!payload || !payload.email || !payload.email_verified) {
+      return res.status(401).json({ message: 'Compte Google non valide' })
+    }
+
+    const email = payload.email.toLowerCase().trim()
+
+    // Cherche si cet email existe déjà dans DZSHOP
+    let user = await User.findOne({ email: email })
+
+    if (!user) {
+
+      // Première connexion Google :
+      // création automatique du compte DZSHOP
+      user = await User.create({
+        nom: payload.name || email.split('@')[0],
+        email: email,
+        provider: 'google',
+        googleId: payload.sub,
+        role: 'client'
+      })
+
+    } else {
+
+      // Le compte existe déjà.
+      // On associe Google au même compte au lieu d'en créer un deuxième.
+      if (!user.googleId) {
+        user.googleId = payload.sub
+        await user.save()
+      }
+    }
+
+    if (user.status === 'bloque') {
+      return res.status(403).json({ message: 'Ce compte est bloqué' })
+    }
+
+    res.json({
+      token: creerToken(user),
+      user: user.versPublic()
+    })
+
+  } catch (err) {
+    console.error('Erreur Google Auth :', err.message)
+    res.status(401).json({ message: 'Authentification Google impossible' })
   }
 })
 

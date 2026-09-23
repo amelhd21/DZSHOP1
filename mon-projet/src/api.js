@@ -19,7 +19,16 @@ export async function apiFetch(chemin, options) {
     headers['Content-Type'] = 'application/json'
   }
 
-  const reponse = await fetch(API_URL + chemin, { ...opts, headers: headers })
+  let reponse;
+
+try {
+  reponse = await fetch(API_URL + chemin, {
+    ...opts,
+    headers: headers
+  });
+} catch {
+  throw new Error('Le serveur est injoignable, réessaie dans un instant');
+}
 
   // Token expiré ou invalide : on déconnecte et on renvoie vers /login
   // (sauf pour login/register, où 401 veut juste dire "mauvais mot de passe")

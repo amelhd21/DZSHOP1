@@ -17,11 +17,24 @@ const schema = new mongoose.Schema({
     trim: true
   },
 
-  password: {
-    type: String,
-    required: true,
-    minlength: 6
+ password: {
+  type: String,
+  required: function () {
+    return this.provider === 'local'
   },
+  minlength: 6
+},
+
+provider: {
+  type: String,
+  enum: ['local', 'google'],
+  default: 'local'
+},
+
+googleId: {
+  type: String,
+  default: null
+},
 
   telephone: { type: String, trim: true, default: '' },
   wilaya:    { type: String, trim: true, default: '' },
@@ -48,7 +61,7 @@ const schema = new mongoose.Schema({
 // AVANT chaque sauvegarde : on remplace le mot de passe par son "hash".
 // Fonction async SANS "next" (Mongoose moderne).
 schema.pre('save', async function () {
-  if (!this.isModified('password')) return
+  if (!this.password || !this.isModified('password')) return
   this.password = await bcrypt.hash(this.password, 10)
 })
 
