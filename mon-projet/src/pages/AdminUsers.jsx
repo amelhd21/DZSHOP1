@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { apiFetch, lireJson } from "../api";
 
 import AdminSidebar from "../components/AdminSidebar";
 
@@ -31,7 +31,6 @@ function AdminUsers() {
 
 
 
-  const token = localStorage.getItem("token");
 
 
 
@@ -43,17 +42,11 @@ function AdminUsers() {
 
     try{
 
-      const response = await axios.get(
-        "http://localhost:5000/api/admin/users",
-        {
-          headers:{
-            Authorization:`Bearer ${token}`
-          }
-        }
-      );
+      const data = await lireJson(
+  await apiFetch("/api/admin/users")
+);
 
-
-      setUsers(response.data);
+setUsers(data);
 
 
     }catch(error){
@@ -203,21 +196,12 @@ function AdminUsers() {
     try{
 
 
-      await axios.patch(
-
-        `http://localhost:5000/api/admin/users/${user._id}/status`,
-
-        {
-          status:newStatus
-        },
-
-        {
-          headers:{
-            Authorization:`Bearer ${token}`
-          }
-        }
-
-      );
+      await lireJson(
+  await apiFetch(`/api/admin/users/${user._id}/status`, {
+    method: "PATCH",
+    body: JSON.stringify({ status: newStatus })
+  })
+);
 
 
       loadUsers();
@@ -257,21 +241,12 @@ function AdminUsers() {
     try{
 
 
-      await axios.patch(
-
-        `http://localhost:5000/api/admin/users/${user._id}/role`,
-
-        {
-          role:newRole
-        },
-
-        {
-          headers:{
-            Authorization:`Bearer ${token}`
-          }
-        }
-
-      );
+      await lireJson(
+  await apiFetch(`/api/admin/users/${user._id}/role`, {
+    method: "PATCH",
+    body: JSON.stringify({ role: newRole })
+  })
+);
 
 
       loadUsers();
@@ -318,17 +293,11 @@ function AdminUsers() {
     try{
 
 
-      await axios.delete(
-
-        `http://localhost:5000/api/admin/users/${user._id}`,
-
-        {
-          headers:{
-            Authorization:`Bearer ${token}`
-          }
-        }
-
-      );
+      await lireJson(
+  await apiFetch(`/api/admin/users/${user._id}`, {
+    method: "DELETE"
+  })
+);
 
 
       loadUsers();
