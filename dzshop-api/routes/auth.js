@@ -118,9 +118,14 @@ router.post('/login', async function (req, res) {
 
     const user = await User.findOne({ email: String(email || '').toLowerCase().trim() })
 
-    // Même message si l'email n'existe pas OU si le mot de passe est faux :
-    // on n'aide pas un pirate à deviner quels emails existent.
-    if (!user || !(await user.verifierMotDePasse(String(password || '')))) {
+// Compte créé avec Google : pas de mot de passe, on l'explique
+if (user && !user.password) {
+  return res.status(400).json({
+    message: 'Ce compte utilise la connexion Google. Clique sur « Continuer avec Google ».'
+  })
+}
+
+if (!user || !(await user.verifierMotDePasse(String(password || '')))) {
       return res.status(401).json({ message: 'Email ou mot de passe incorrect' })
     }
 
@@ -154,7 +159,13 @@ router.put('/password', protect, async function (req, res) {
     // req.user vient de protect SANS le password : on le relit avec
     const user = await User.findById(req.user._id)
 
-    if (!(await user.verifierMotDePasse(String(currentPassword || '')))) {
+if (!user.password) {
+  return res.status(400).json({
+    message: 'Ton compte utilise Google : pas de mot de passe à modifier ici.'
+  })
+}
+
+if (!(await user.verifierMotDePasse(String(currentPassword || '')))) {
       return res.status(400).json({ message: 'Mot de passe actuel incorrect' })
     }
 
@@ -167,5 +178,11 @@ router.put('/password', protect, async function (req, res) {
     res.status(500).json({ message: err.message })
   }
 })
+router.get('/test', function(req, res) {
 
+  res.json({
+    message: "auth chargé"
+  })
+
+})
 export default router

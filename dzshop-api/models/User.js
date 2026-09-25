@@ -67,6 +67,8 @@ schema.pre('save', async function () {
 
 // Compare le mot de passe tapé avec la version hachée en base
 schema.methods.verifierMotDePasse = function (motDePasse) {
+  // Compte Google : pas de mot de passe en base, donc jamais valide
+  if (!this.password) return false
   return bcrypt.compare(motDePasse, this.password)
 }
 
