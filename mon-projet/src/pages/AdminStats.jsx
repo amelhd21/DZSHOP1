@@ -1,321 +1,504 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
 import AdminSidebar from "../components/AdminSidebar";
-import SalesChart from "../components/SalesChart";
 import StatCard from "../components/StatCard";
+import SalesChart from "../components/SalesChart";
 
 import {
   FaMoneyBillWave,
   FaShoppingCart,
   FaUsers,
-  FaChartLine,
-  FaArrowUp,
-  FaBoxOpen,
-  FaTrophy
+  FaChartLine
 } from "react-icons/fa";
+
+import { apiFetch, lireJson } from "../api";
+
+
+
 
 function AdminStats() {
 
+
   const [period, setPeriod] = useState("Mois");
 
-  const statsByPeriod = {
-    Aujourdhui: {
-      revenue: "125 000 DA",
-      orders: 8,
-      clients: 5,
-      average: "15 625 DA"
-    },
 
-    Semaine: {
-      revenue: "485 000 DA",
-      orders: 24,
-      clients: 16,
-      average: "20 208 DA"
-    },
+  const [stats, setStats] = useState({
 
-    Mois: {
-      revenue: "1 850 000 DA",
-      orders: 86,
-      clients: 58,
-      average: "21 512 DA"
-    },
+    revenue: 0,
+    todayRevenue: 0,
 
-    Année: {
-      revenue: "12 450 000 DA",
-      orders: 624,
-      clients: 318,
-      average: "19 951 DA"
+    orders: 0,
+    clients: 0,
+    users: 0,
+
+    products: 0,
+
+    deliveredOrders: 0,
+    pendingOrders: 0,
+    cancelledOrders: 0,
+
+    topProducts: [],
+    recentOrders: []
+
+  });
+
+
+
+  useEffect(() => {
+
+
+    async function loadStats() {
+
+
+      try {
+
+
+        const response = await apiFetch(
+          "/api/admin/stats"
+        );
+
+
+        const data = await lireJson(response);
+
+
+        setStats({
+
+          ...data,
+
+          topProducts:
+            data.topProducts || [],
+
+          recentOrders:
+            data.recentOrders || []
+
+        });
+
+
+      } catch (error) {
+
+
+        console.error(
+          "Erreur chargement statistiques :",
+          error
+        );
+
+
+      }
+
+
     }
-  };
 
-  const currentStats = statsByPeriod[period];
 
-  const topProducts = [
-    {
-      id: "p1",
-      title: "Smartphone Samsung",
-      ventes: 28,
-      revenue: 560000
-    },
-    {
-      id: "p2",
-      title: "Casque Bluetooth",
-      ventes: 21,
-      revenue: 189000
-    },
-    {
-      id: "p3",
-      title: "Montre connectée",
-      ventes: 17,
-      revenue: 255000
-    },
-    {
-      id: "p4",
-      title: "Écouteurs sans fil",
-      ventes: 14,
-      revenue: 126000
-    }
-  ];
+    loadStats();
 
-  const recentActivity = [
-    {
-      id: 1,
-      title: "Nouvelle commande",
-      description: "Commande CMD086 enregistrée",
-      value: "+ 12 500 DA"
-    },
-    {
-      id: 2,
-      title: "Nouvelle commande",
-      description: "Commande CMD085 enregistrée",
-      value: "+ 8 200 DA"
-    },
-    {
-      id: 3,
-      title: "Nouveau client",
-      description: "Un nouveau client s'est inscrit",
-      value: "Client"
-    },
-    {
-      id: 4,
-      title: "Commande livrée",
-      description: "Commande CMD082 terminée",
-      value: "Livrée"
-    }
-  ];
+
+  }, []);
+
+
+
+
+  const averageOrder =
+
+    stats.orders > 0
+
+      ? Math.round(
+          stats.revenue / stats.orders
+        )
+
+      : 0;
+
+
 
   return (
+
     <div className="admin-dashboard">
+
 
       <AdminSidebar />
 
+
       <main className="admin-main">
-
-        {/* HEADER */}
-
-        <div className="admin-header">
-
-          <div>
-            <h1>Statistiques</h1>
-
-            <p>
-              Analyse des performances de DZShop
-            </p>
-          </div>
-
-          <select
-            className="stats-period-select"
-            value={period}
-            onChange={(e) => setPeriod(e.target.value)}
-          >
-            <option value="Aujourdhui">
-              Aujourd'hui
-            </option>
-
-            <option value="Semaine">
-              Cette semaine
-            </option>
-
-            <option value="Mois">
-              Ce mois
-            </option>
-
-            <option value="Année">
-              Cette année
-            </option>
-          </select>
-
-        </div>
-
-        {/* CARTES */}
-
         <div className="stats-grid">
 
+
           <StatCard
-            title="Chiffre d'affaires"
-            value={currentStats.revenue}
+
             icon={<FaMoneyBillWave />}
-            subtitle={`Période : ${period}`}
+
+            title="Chiffre d'affaires"
+
+            value={
+              `${stats.revenue.toLocaleString()} DA`
+            }
+
           />
 
+
+
           <StatCard
-            title="Commandes"
-            value={currentStats.orders}
+
             icon={<FaShoppingCart />}
-            subtitle={`Période : ${period}`}
+
+            title="Commandes"
+
+            value={stats.orders}
+
           />
 
+
+
           <StatCard
-            title="Clients"
-            value={currentStats.clients}
+
             icon={<FaUsers />}
-            subtitle="Clients enregistrés"
+
+            title="Clients"
+
+            value={stats.clients}
+
           />
 
+
+
           <StatCard
-            title="Panier moyen"
-            value={currentStats.average}
+
             icon={<FaChartLine />}
-            subtitle="Valeur moyenne"
+
+            title="Panier moyen"
+
+            value={
+              `${averageOrder.toLocaleString()} DA`
+            }
+
           />
+
 
         </div>
 
-        {/* GRAPHIQUE */}
 
-        <section className="stats-chart-card">
 
-          <div className="stats-section-header">
 
-            <div>
-              <h2>Évolution des ventes</h2>
-              <p>
-                Suivi du chiffre d'affaires
-              </p>
-            </div>
 
-            <div className="stats-growth">
-              <FaArrowUp />
-              12,5 %
-            </div>
+        <section className="dashboard-card">
+
+
+          <div className="card-header">
+
+            <h3>
+              Évolution des ventes
+            </h3>
 
           </div>
 
-          <SalesChart />
+
+
+          <SalesChart
+
+            data={[
+
+              {
+                name: "Total",
+                value: stats.revenue
+              }
+
+            ]}
+
+          />
+
 
         </section>
 
-        {/* DEUX COLONNES */}
 
-        <div className="stats-content-grid">
 
-          {/* PRODUITS LES PLUS VENDUS */}
 
-          <section className="stats-panel">
 
-            <div className="stats-section-header">
 
-              <div>
-                <h2>Produits les plus vendus</h2>
-                <p>Classement actuel</p>
-              </div>
+        <section className="dashboard-card">
 
-              <FaTrophy className="stats-header-icon" />
 
-            </div>
+          <div className="card-header">
 
-            <div className="stats-products-list">
+            <h3>
+              Produits les plus vendus
+            </h3>
 
-              {topProducts.map((product, index) => (
+          </div>
 
-                <div
-                  className="stats-product"
-                  key={product.id}
-                >
 
-                  <div className="stats-product-rank">
-                    {index + 1}
-                  </div>
 
-                  <div className="stats-product-info">
+          <div className="top-products">
 
-                    <strong>
-                      {product.title}
-                    </strong>
 
-                    <span>
-                      {product.ventes} ventes
-                    </span>
+          {
 
-                  </div>
+            stats.topProducts.length === 0 ?
 
-                  <div className="stats-product-revenue">
-                    {product.revenue.toLocaleString()} DA
-                  </div>
 
-                </div>
+            (
 
-              ))}
+              <p>
+                Aucune vente enregistrée
+              </p>
 
-            </div>
 
-          </section>
+            )
 
-          {/* ACTIVITÉ */}
+            :
 
-          <section className="stats-panel">
 
-            <div className="stats-section-header">
+            (
 
-              <div>
-                <h2>Activité récente</h2>
-                <p>Derniers événements</p>
-              </div>
+              stats.topProducts.map(
 
-              <FaBoxOpen className="stats-header-icon" />
+                (product,index)=>(
 
-            </div>
 
-            <div className="stats-activity-list">
+                  <div
 
-              {recentActivity.map(activity => (
+                    className="top-product"
 
-                <div
-                  className="stats-activity-item"
-                  key={activity.id}
-                >
+                    key={
+                      product._id || index
+                    }
 
-                  <div className="stats-activity-dot"></div>
+                  >
 
-                  <div className="stats-activity-info">
+
+                    <div>
+
+
+                      <span className="rank">
+
+                        #{index + 1}
+
+                      </span>
+
+
+
+                      <p>
+
+                        {product.title}
+
+                      </p>
+
+
+                    </div>
+
+
 
                     <strong>
-                      {activity.title}
+
+                      {product.quantity} ventes
+
                     </strong>
 
-                    <span>
-                      {activity.description}
-                    </span>
+
 
                   </div>
 
-                  <div className="stats-activity-value">
-                    {activity.value}
-                  </div>
 
-                </div>
+                )
 
-              ))}
+              )
 
-            </div>
+            )
 
-          </section>
+          }
 
-        </div>
+
+          </div>
+
+
+        </section>
+
+
+
+
+
+
+        <section className="dashboard-card">
+
+
+          <div className="card-header">
+
+            <h3>
+              Dernières commandes
+            </h3>
+
+
+          </div>
+
+
+
+
+          <div className="table-wrapper">
+
+
+            <table>
+
+
+              <thead>
+
+                <tr>
+
+                  <th>
+                    Référence
+                  </th>
+
+                  <th>
+                    Client
+                  </th>
+
+                  <th>
+                    Montant
+                  </th>
+
+                  <th>
+                    Statut
+                  </th>
+
+                </tr>
+
+              </thead>
+
+
+
+
+              <tbody>
+
+
+              {
+
+                stats.recentOrders.length === 0 ?
+
+
+                (
+
+                  <tr>
+
+                    <td colSpan="4">
+
+                      Aucune commande
+
+                    </td>
+
+                  </tr>
+
+
+                )
+
+
+                :
+
+
+                (
+
+                  stats.recentOrders.map(
+
+                    (order)=>(
+
+
+                      <tr
+
+                        key={order._id}
+
+                      >
+
+
+                        <td>
+                          {order.reference}
+                        </td>
+
+
+
+                        <td>
+                          {order.client}
+                        </td>
+
+
+
+                        <td>
+
+                          {
+                            order.total.toLocaleString()
+                          }
+
+                          DA
+
+                        </td>
+
+
+
+                        <td>
+
+                          <span
+
+                            className={
+
+                              order.status === "Livrée"
+
+                              ?
+
+                              "status delivered"
+
+                              :
+
+                              order.status === "Annulée"
+
+                              ?
+
+                              "status cancelled"
+
+                              :
+
+                              "status pending"
+
+                            }
+
+                          >
+
+                            {order.status}
+
+                          </span>
+
+
+                        </td>
+
+
+                      </tr>
+
+
+                    )
+
+                  )
+
+                )
+
+              }
+
+
+              </tbody>
+
+
+            </table>
+
+
+          </div>
+
+
+        </section>
+
+
 
       </main>
 
+
     </div>
+
+
   );
+
+
 }
+
 
 export default AdminStats;

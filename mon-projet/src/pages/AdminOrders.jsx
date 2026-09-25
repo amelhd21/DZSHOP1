@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AdminSidebar from "../components/AdminSidebar";
+import { apiFetch, lireJson } from "../api";
+
 import {
   FaShoppingCart,
   FaCheckCircle,
@@ -10,39 +12,10 @@ import {
   FaTimes
 } from "react-icons/fa";
 
+
 function AdminOrders() {
 
-  const [orders, setOrders] = useState([
-    {
-      id: "CMD001",
-      client: "Ahmed Benali",
-      date: "16/09/2026",
-      total: 12500,
-      status: "Livrée"
-    },
-    {
-      id: "CMD002",
-      client: "Sofiane Karim",
-      date: "15/09/2026",
-      total: 8200,
-      status: "En attente"
-    },
-    {
-      id: "CMD003",
-      client: "Yacine Amine",
-      date: "14/09/2026",
-      total: 15600,
-      status: "Livrée"
-    },
-    {
-      id: "CMD004",
-      client: "Karim",
-      date: "13/09/2026",
-      total: 7400,
-      status: "Annulée"
-    }
-  ]);
-
+  const [orders, setOrders] = useState([]);
 
   const [search, setSearch] = useState("");
 
@@ -50,35 +23,88 @@ function AdminOrders() {
 
   const [selectedOrder, setSelectedOrder] = useState(null);
 
+  const [loading, setLoading] = useState(true);
+
+
+  // =========================
+  // CHARGER LES COMMANDES
+  // =========================
+
+  useEffect(function () {
+
+    async function chargerCommandes() {
+
+      try {
+
+        const data = await lireJson(
+          await apiFetch("/api/orders")
+        );
+
+        setOrders(data);
+
+      } catch (err) {
+
+        console.error(
+          "Erreur chargement commandes :",
+          err.message
+        );
+
+      } finally {
+
+        setLoading(false);
+
+      }
+
+    }
+
+    chargerCommandes();
+
+  }, []);
+
+
+  // =========================
+  // STATISTIQUES
+  // =========================
 
   const totalOrders = orders.length;
 
-  const delivered =
-    orders.filter(
-      order => order.status === "Livrée"
-    ).length;
 
-  const pending =
-    orders.filter(
-      order => order.status === "En attente"
-    ).length;
+  const delivered = orders.filter(
+    order => order.status === "Livrée"
+  ).length;
 
-  const cancelled =
-    orders.filter(
-      order => order.status === "Annulée"
-    ).length;
 
+  const pending = orders.filter(
+    order => order.status === "En attente"
+  ).length;
+
+
+  const cancelled = orders.filter(
+    order => order.status === "Annulée"
+  ).length;
+
+
+  // =========================
+  // RECHERCHE + FILTRE
+  // =========================
 
   const filteredOrders = orders.filter(order => {
 
-    const searchMatch =
-      order.id
-        .toLowerCase()
-        .includes(search.toLowerCase()) ||
+    const searchValue =
+      search.toLowerCase();
 
-      order.client
+
+    const searchMatch =
+
+      (order.id || "")
         .toLowerCase()
-        .includes(search.toLowerCase());
+        .includes(searchValue)
+
+      ||
+
+      (order.client || "")
+        .toLowerCase()
+        .includes(searchValue);
 
 
     let filterMatch = true;
@@ -113,55 +139,89 @@ function AdminOrders() {
   });
 
 
-  function changeStatus(id) {
+  // =========================
+  // CHANGER LE STATUT
+  // =========================
 
-    setOrders(
+  async function changeStatus(order) {
 
-      orders.map(order => {
-
-        if(order.id !== id) {
-
-          return order;
-
-        }
+    let newStatus;
 
 
-        let newStatus;
+    if (order.status === "En attente") {
+
+      newStatus = "Livrée";
+
+    }
+
+    else if (order.status === "Livrée") {
+
+      newStatus = "Annulée";
+
+    }
+
+    else {
+
+      newStatus = "En attente";
+
+    }
 
 
-        if(order.status === "En attente") {
+    try {
 
-          newStatus = "Livrée";
+      const updatedOrder = await lireJson(
 
-        }
+        await apiFetch(
+          `/api/orders/${order._id}/status`,
+          {
+            method: "PATCH",
 
-        else if(order.status === "Livrée") {
+            body: JSON.stringify({
+              status: newStatus
+            })
+          }
+        )
 
-          newStatus = "Annulée";
-
-        }
-
-        else {
-
-          newStatus = "En attente";
-
-        }
+      );
 
 
-        return {
+      setOrders(previousOrders =>
 
-          ...order,
+        previousOrders.map(item =>
 
-          status:newStatus
+          item._id === updatedOrder._id
+            ? updatedOrder
+            : item
 
-        };
+        )
 
-      })
+      );
 
-    );
+
+      if (
+        selectedOrder &&
+        selectedOrder._id === updatedOrder._id
+      ) {
+
+        setSelectedOrder(updatedOrder);
+
+      }
+
+
+    } catch (err) {
+
+      console.error(
+        "Erreur changement statut :",
+        err.message
+      );
+
+      alert(
+        "Impossible de modifier le statut de la commande."
+      );
+
+    }
 
   }
-
 
 
   return (
@@ -192,6 +252,9 @@ function AdminOrders() {
         </div>
 
 
+        {/* ========================= */}
+        {/* STATISTIQUES */}
+        {/* ========================= */}
 
         <div className="stats-grid">
 
@@ -217,7 +280,6 @@ function AdminOrders() {
           </div>
 
 
-
           <div className="stat-card">
 
             <div className="stat-icon">
@@ -239,7 +301,6 @@ function AdminOrders() {
           </div>
 
 
-
           <div className="stat-card">
 
             <div className="stat-icon">
@@ -259,7 +320,6 @@ function AdminOrders() {
             </div>
 
           </div>
-
 
 
           <div className="stat-card warning-card">
@@ -286,6 +346,9 @@ function AdminOrders() {
         </div>
 
 
+        {/* ========================= */}
+        {/* TABLEAU */}
+        {/* ========================= */}
 
         <section className="dashboard-card">
 
@@ -295,9 +358,7 @@ function AdminOrders() {
 
             <div className="users-search">
 
-
               <FaSearch />
-
 
               <input
 
@@ -307,15 +368,13 @@ function AdminOrders() {
 
                 value={search}
 
-                onChange={(e)=>
+                onChange={(e) =>
                   setSearch(e.target.value)
                 }
 
               />
 
-
             </div>
-
 
 
             <select
@@ -324,7 +383,7 @@ function AdminOrders() {
 
               value={filter}
 
-              onChange={(e)=>
+              onChange={(e) =>
                 setFilter(e.target.value)
               }
 
@@ -346,12 +405,10 @@ function AdminOrders() {
                 Annulées
               </option>
 
-
             </select>
 
 
           </div>
-
 
 
           <div className="table-wrapper">
@@ -388,114 +445,139 @@ function AdminOrders() {
                     Actions
                   </th>
 
-
                 </tr>
 
               </thead>
 
 
-
               <tbody>
 
 
-                {filteredOrders.map(order => (
+                {loading ? (
 
+                  <tr>
 
-                  <tr key={order.id}>
-
-
-                    <td>
-                      {order.id}
+                    <td colSpan="6">
+                      Chargement des commandes...
                     </td>
-
-
-                    <td>
-                      {order.client}
-                    </td>
-
-
-                    <td>
-                      {order.date}
-                    </td>
-
-
-                    <td>
-                      {order.total.toLocaleString()} DA
-                    </td>
-
-
-                    <td>
-
-                      <span
-
-                        className={
-                          order.status === "Livrée"
-                          ? "status delivered"
-                          :
-                          order.status === "En attente"
-                          ? "status pending"
-                          :
-                          "status cancelled"
-                        }
-
-                      >
-
-                        {order.status}
-
-                      </span>
-
-                    </td>
-
-
-
-                    <td>
-
-
-                      <div className="user-actions">
-
-
-                        <button
-
-                          className="user-action view-action"
-
-                          onClick={()=>
-                            setSelectedOrder(order)
-                          }
-
-                        >
-
-                          <FaEye />
-
-                        </button>
-
-
-
-                        <button
-
-                          className="user-action block-action"
-
-                          onClick={()=>
-                            changeStatus(order.id)
-                          }
-
-                        >
-
-                          Changer
-
-                        </button>
-
-
-
-                      </div>
-
-
-                    </td>
-
 
                   </tr>
 
+                ) : filteredOrders.length === 0 ? (
 
-                ))}
+                  <tr>
+
+                    <td colSpan="6">
+                      Aucune commande trouvée
+                    </td>
+
+                  </tr>
+
+                ) : (
+
+                  filteredOrders.map(order => (
+
+
+                    <tr key={order._id}>
+
+
+                      <td>
+                        {order.id}
+                      </td>
+
+
+                      <td>
+                        {order.client}
+                      </td>
+
+
+                      <td>
+                        {order.date}
+                      </td>
+
+
+                      <td>
+
+                        {(order.total || 0).toLocaleString()} DA
+
+                      </td>
+
+
+                      <td>
+
+                        <span
+
+                          className={
+
+                            order.status === "Livrée"
+
+                              ? "status delivered"
+
+                              : order.status === "En attente"
+
+                              ? "status pending"
+
+                              : "status cancelled"
+
+                          }
+
+                        >
+
+                          {order.status}
+
+                        </span>
+
+                      </td>
+
+
+                      <td>
+
+
+                        <div className="user-actions">
+
+
+                          <button
+
+                            className="user-action view-action"
+
+                            onClick={() =>
+                              setSelectedOrder(order)
+                            }
+
+                          >
+
+                            <FaEye />
+
+                          </button>
+
+
+                          <button
+
+                            className="user-action block-action"
+
+                            onClick={() =>
+                              changeStatus(order)
+                            }
+
+                          >
+
+                            Changer
+
+                          </button>
+
+
+                        </div>
+
+
+                      </td>
+
+
+                    </tr>
+
+
+                  ))
+
+                )}
 
 
               </tbody>
@@ -510,10 +592,12 @@ function AdminOrders() {
         </section>
 
 
-
       </main>
 
 
+      {/* ========================= */}
+      {/* FENÊTRE DÉTAILS */}
+      {/* ========================= */}
 
       {selectedOrder && (
 
@@ -522,7 +606,7 @@ function AdminOrders() {
 
           className="user-modal-overlay"
 
-          onClick={()=>
+          onClick={() =>
             setSelectedOrder(null)
           }
 
@@ -533,7 +617,7 @@ function AdminOrders() {
 
             className="user-modal"
 
-            onClick={(e)=>
+            onClick={(e) =>
               e.stopPropagation()
             }
 
@@ -544,7 +628,7 @@ function AdminOrders() {
 
               className="product-modal-close"
 
-              onClick={()=>
+              onClick={() =>
                 setSelectedOrder(null)
               }
 
@@ -601,7 +685,9 @@ function AdminOrders() {
                 </span>
 
                 <strong>
-                  {selectedOrder.total.toLocaleString()} DA
+
+                  {(selectedOrder.total || 0).toLocaleString()} DA
+
                 </strong>
 
               </div>
@@ -618,6 +704,74 @@ function AdminOrders() {
                 </strong>
 
               </div>
+
+
+              {selectedOrder.telephone && (
+
+                <div>
+
+                  <span>
+                    Téléphone
+                  </span>
+
+                  <strong>
+                    {selectedOrder.telephone}
+                  </strong>
+
+                </div>
+
+              )}
+
+
+              {selectedOrder.wilaya && (
+
+                <div>
+
+                  <span>
+                    Wilaya
+                  </span>
+
+                  <strong>
+                    {selectedOrder.wilaya}
+                  </strong>
+
+                </div>
+
+              )}
+
+
+              {selectedOrder.commune && (
+
+                <div>
+
+                  <span>
+                    Commune
+                  </span>
+
+                  <strong>
+                    {selectedOrder.commune}
+                  </strong>
+
+                </div>
+
+              )}
+
+
+              {selectedOrder.adresse && (
+
+                <div>
+
+                  <span>
+                    Adresse
+                  </span>
+
+                  <strong>
+                    {selectedOrder.adresse}
+                  </strong>
+
+                </div>
+
+              )}
 
 
             </div>
@@ -637,6 +791,4 @@ function AdminOrders() {
   );
 
 }
-
-
 export default AdminOrders;
