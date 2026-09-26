@@ -69,9 +69,10 @@ function ProductList() {
   useEffect(() => {
     apiFetch("/api/products")
       .then((res) => res.json())
-      .then((data) => {
-        setApiProducts(data);
-      })
+      
+.then((data) => {
+  setApiProducts(Array.isArray(data) ? data : []);
+})
       .catch((err) => {
         console.error("Erreur chargement produits :", err);
       });
