@@ -130,6 +130,13 @@ router.patch(
         });
 
       }
+      // Garde-fou : un admin ne peut pas modifier son propre compte
+      if (String(user._id) === String(req.user._id)) {
+        return res.status(400).json({
+          message: 'Tu ne peux pas modifier ton propre compte'
+        });
+      }
+
 
 
       user.status = status;
@@ -201,6 +208,13 @@ router.patch(
         });
 
       }
+      // Garde-fou : un admin ne peut pas modifier son propre compte
+      if (String(user._id) === String(req.user._id)) {
+        return res.status(400).json({
+          message: 'Tu ne peux pas modifier ton propre compte'
+        });
+      }
+
 
 
       user.role = role;
