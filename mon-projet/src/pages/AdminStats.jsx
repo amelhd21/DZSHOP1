@@ -191,18 +191,7 @@ function AdminStats() {
 
 
 
-          <SalesChart
-
-            data={[
-
-              {
-                name: "Total",
-                value: stats.revenue
-              }
-
-            ]}
-
-          />
+          <SalesChart data={stats.ventes7j || []} />
 
 
         </section>

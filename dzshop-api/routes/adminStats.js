@@ -253,6 +253,32 @@ router.get('/stats', protect, isAdmin, async (req, res) => {
 
 
 
+    // =========================
+// VENTES DES 7 DERNIERS JOURS (pour le graphique)
+// =========================
+
+const JOURS = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam']
+
+const livrees = await Order.find({ status: 'Livrée' }).select('total createdAt')
+
+const ventes7j = []
+
+for (let i = 6; i >= 0; i--) {
+
+  const debut = new Date()
+  debut.setHours(0, 0, 0, 0)
+  debut.setDate(debut.getDate() - i)
+
+  const fin = new Date(debut)
+  fin.setDate(fin.getDate() + 1)
+
+  const ventes = livrees
+    .filter(function (o) { return o.createdAt >= debut && o.createdAt < fin })
+    .reduce(function (somme, o) { return somme + o.total }, 0)
+
+  ventes7j.push({ jour: JOURS[debut.getDay()], ventes: ventes })
+}
+
     res.json({
 
       users,
@@ -278,7 +304,8 @@ router.get('/stats', protect, isAdmin, async (req, res) => {
 
       recentOrders,
 
-      topProducts
+      topProducts,
+      ventes7j
 
     })
 

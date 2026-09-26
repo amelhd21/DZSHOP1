@@ -8,17 +8,7 @@ import {
   Tooltip
 } from "recharts";
 
-function SalesChart() {
-
-  const data = [
-    { jour: "Lun", ventes: 42000 },
-    { jour: "Mar", ventes: 65000 },
-    { jour: "Mer", ventes: 58000 },
-    { jour: "Jeu", ventes: 92000 },
-    { jour: "Ven", ventes: 110000 },
-    { jour: "Sam", ventes: 145000 },
-    { jour: "Dim", ventes: 125000 }
-  ];
+function SalesChart({ data }) {
 
   return (
     <div className="dashboard-card sales-chart-card">
