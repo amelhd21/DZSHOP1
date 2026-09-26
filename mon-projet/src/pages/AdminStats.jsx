@@ -19,7 +19,7 @@ import { apiFetch, lireJson } from "../api";
 function AdminStats() {
 
 
-  const [period, setPeriod] = useState("Mois");
+
 
 
   const [stats, setStats] = useState({
@@ -488,6 +488,4 @@ function AdminStats() {
 
 
 }
-
-
 export default AdminStats;

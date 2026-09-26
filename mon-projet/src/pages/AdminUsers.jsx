@@ -9,7 +9,6 @@ import {
   FaUserSlash,
   FaUserShield,
   FaSearch,
-  FaEye,
   FaBan,
   FaCheck,
   FaTrash
@@ -25,7 +24,6 @@ function AdminUsers() {
 
   const [filter, setFilter] = useState("Tous");
 
-  const [selectedUser, setSelectedUser] = useState(null);
 
   const [loading, setLoading] = useState(true);
 
