@@ -591,4 +591,17 @@
     font-size: 22px;
   }
 }
+* =========================================
+   ZOOM TACTILE - TABLETTE + TÉLÉPHONE
+========================================= */
 
+@media (max-width: 1024px) {
+
+  .main-image-container {
+    touch-action: none;
+  }
+
+  .main-product-image.touch-zoom {
+    transform: scale(2);
+  }
+}

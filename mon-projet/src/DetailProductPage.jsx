@@ -92,6 +92,29 @@ function handleMouseMove(e) {
 
   image.style.transformOrigin = `${x}% ${y}%`
 }
+function handleTouchMove(e) {
+  const container = e.currentTarget
+  const image = container.querySelector('.main-product-image')
+
+  const rect = container.getBoundingClientRect()
+  const touch = e.touches[0]
+
+  if (!touch) return
+
+  const x = ((touch.clientX - rect.left) / rect.width) * 100
+  const y = ((touch.clientY - rect.top) / rect.height) * 100
+
+  image.style.transformOrigin = `${x}% ${y}%`
+  image.classList.add('touch-zoom')
+}
+
+function handleTouchEnd(e) {
+  const container = e.currentTarget
+  const image = container.querySelector('.main-product-image')
+
+  image.classList.remove('touch-zoom')
+  image.style.transformOrigin = 'center center'
+}
 
   return (
     <div className="product-detail-container">
@@ -118,9 +141,12 @@ function handleMouseMove(e) {
         </div>
 
         {/* Grande image */}
-  <div
+<div
   className="main-image-container"
   onMouseMove={handleMouseMove}
+  onTouchStart={handleTouchMove}
+  onTouchMove={handleTouchMove}
+  onTouchEnd={handleTouchEnd}
 >
   <img
     src={imageActive}
