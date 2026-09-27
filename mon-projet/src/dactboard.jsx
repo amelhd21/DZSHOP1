@@ -47,10 +47,7 @@ function Dashboard() {
         {/* Produits vedettes */}
         <section className="products-section">
 
-          <div className="products-header">
-            <h2>Produits vedettes</h2>
-           
-          </div>
+          
           <button className="products-btn"onClick={() => navigate('/products')}>
               Voir tous les produits
             </button>

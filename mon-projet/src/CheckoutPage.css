@@ -1,0 +1,77 @@
+/* =========================================
+   RESPONSIVE CHECKOUT
+========================================= */
+
+.checkout-container {
+  width: 100%;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 130px !important;
+  padding-left: 20px;
+  padding-right: 20px;
+  box-sizing: border-box;
+}
+
+
+/* TABLETTE */
+@media (min-width: 601px) and (max-width: 1024px) {
+
+  .checkout-container {
+    width: 90%;
+    max-width: 550px;
+    padding-top: 140px !important;
+  }
+}
+
+
+/* TÉLÉPHONE */
+@media (max-width: 600px) {
+
+  .checkout-container {
+    width: 100%;
+    max-width: 100%;
+
+    padding-top: 160px !important;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .checkout-container h1 {
+    font-size: 27px;
+  }
+
+  .checkout-container input,
+  .checkout-container textarea,
+  .checkout-container button {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .checkout-container .list-group-item {
+    gap: 10px;
+  }
+
+  .checkout-container .list-group-item span:last-child {
+    text-align: right;
+    overflow-wrap: break-word;
+  }
+}
+
+
+/* TRÈS PETIT TÉLÉPHONE */
+@media (max-width: 380px) {
+
+  .checkout-container {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .checkout-container h1 {
+    font-size: 24px;
+  }
+
+  .checkout-container .list-group-item {
+    font-size: 14px;
+  }
+}

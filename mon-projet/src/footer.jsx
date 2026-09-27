@@ -68,7 +68,7 @@ function Piedpage() {
                 {/* Copyright */}
                 <div className="s3divfooter">
                     <p>
-                        © 2026 DZShop — Tous droits réservés
+                        © Septembre 2026 DZShop — Tous droits réservés ( HADJAMI AMEL)
                     </p>
                 </div>
 

@@ -103,3 +103,131 @@
 .dropdown-item:hover {
     background-color: #f1f1f1;
 }
+/* ============================= */
+/* RESPONSIVE TABLETTE */
+/* ============================= */
+
+@media (max-width: 1200px) {
+
+    .bar-navigation {
+        padding: 0 20px;
+        justify-content: space-between;
+    }
+
+    .logo {
+        margin-right: 20px;
+        font-size: 22px;
+        white-space: nowrap;
+    }
+
+    .liste {
+        gap: 25px;
+        font-size: 18px;
+    }
+
+    .buttons {
+        margin-left: 20px;
+        gap: 10px;
+    }
+
+    .bar-navigation button,
+    .bar-navigation a.btn-primary {
+        width: auto;
+        min-width: 110px;
+        padding: 0 12px;
+        font-size: 16px;
+    }
+}
+
+
+/* ============================= */
+/* RESPONSIVE TELEPHONE */
+/* ============================= */
+
+@media (max-width: 768px) {
+
+    .bar-navigation {
+        height: auto;
+        min-height: 70px;
+        padding: 10px 12px;
+
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .logo {
+        font-size: 18px;
+        margin-right: 10px;
+        white-space: nowrap;
+    }
+
+    .liste {
+        gap: 15px;
+        font-size: 14px;
+    }
+
+    .buttons {
+        width: 100%;
+        margin-left: 0;
+
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .bar-navigation button,
+    .bar-navigation a.btn-primary {
+        width: auto;
+        min-width: 110px;
+        height: 42px;
+
+        font-size: 14px;
+        padding: 0 10px;
+    }
+
+    .dropdown {
+        max-width: 50%;
+    }
+
+    .dropdown button {
+        width: auto;
+        max-width: 100%;
+    }
+
+    .dropdown-menu {
+        max-width: 90vw;
+    }
+}
+
+
+/* ============================= */
+/* PETITS TELEPHONES */
+/* ============================= */
+
+@media (max-width: 480px) {
+
+    .bar-navigation {
+        justify-content: center;
+    }
+
+    .logo {
+        font-size: 17px;
+    }
+
+    .liste {
+        gap: 12px;
+        font-size: 13px;
+    }
+
+    .buttons {
+        width: 100%;
+    }
+
+    .bar-navigation button,
+    .bar-navigation a.btn-primary {
+        min-width: 100px;
+        font-size: 13px;
+    }
+}

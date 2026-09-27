@@ -1685,3 +1685,949 @@ tbody tr:hover {
     align-items: flex-start;
   }
 }
+
+/* =========================================
+   RESPONSIVE GLOBAL ADMIN
+========================================= */
+
+/* TABLETTE */
+@media (min-width: 769px) and (max-width: 1024px) {
+
+  .admin-main {
+    padding: 25px;
+    box-sizing: border-box;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-card {
+    min-width: 0;
+  }
+}
+
+
+/* TÉLÉPHONE */
+@media (max-width: 768px) {
+
+  .admin-dashboard {
+    width: 100%;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .admin-sidebar {
+  width: 145px;
+  padding: 20px 10px;
+  box-sizing: border-box;
+}
+
+.admin-sidebar nav a {
+  width: 100%;
+  padding: 12px 10px;
+  box-sizing: border-box;
+
+  justify-content: flex-start;
+
+  /* réaffiche le texte caché */
+  font-size: 13px;
+  gap: 8px;
+}
+
+.admin-main {
+  margin-left: 145px;
+  width: calc(100% - 145px);
+  padding: 18px 12px;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+  .admin-logo {
+    font-size: 15px;
+    padding-left: 0;
+    text-align: center;
+  }
+
+  .admin-sidebar nav a {
+    width: 100%;
+    padding: 13px 8px;
+    box-sizing: border-box;
+    justify-content: center;
+  }
+
+  .admin-main {
+    margin-left: 70px;
+    width: calc(100% - 70px);
+    padding: 18px 12px;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  .admin-header {
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .admin-header h1 {
+    font-size: 24px;
+    overflow-wrap: break-word;
+  }
+
+  .admin-header p {
+    font-size: 14px;
+  }
+
+  .add-product-btn {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .stats-grid {
+    width: 100%;
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .stat-card {
+    width: 100%;
+    padding: 18px;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  .dashboard-grid {
+    width: 100%;
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .dashboard-card {
+    width: 100%;
+    min-width: 0;
+    padding: 18px;
+    box-sizing: border-box;
+  }
+
+  .card-header {
+    flex-wrap: wrap;
+  }
+
+  .table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-wrapper table {
+    min-width: 600px;
+  }
+
+  .top-product {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+
+/* TRÈS PETIT TÉLÉPHONE */
+@media (max-width: 380px) {
+
+  .admin-sidebar {
+    width: 60px;
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  .admin-main {
+    margin-left: 60px;
+    width: calc(100% - 60px);
+    padding: 15px 8px;
+  }
+
+  .admin-logo {
+    font-size: 13px;
+  }
+
+  .admin-header h1 {
+    font-size: 21px;
+  }
+
+  .stat-card,
+  .dashboard-card {
+    padding: 14px;
+  }
+
+  .stat-icon {
+    width: 46px;
+    height: 46px;
+    min-width: 46px;
+  }
+}
+/* =========================================
+   MENU ADMIN MOBILE
+========================================= */
+
+/* Caché sur PC et tablette */
+.admin-mobile-menu-btn {
+  display: none;
+}
+
+.admin-sidebar-overlay {
+  display: none;
+}
+
+
+/* TÉLÉPHONE */
+@media (max-width: 768px) {
+
+  /* Bouton ☰ */
+  .admin-mobile-menu-btn {
+    display: flex;
+
+    position: fixed;
+    top: 15px;
+    left: 15px;
+
+    width: 45px;
+    height: 45px;
+
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    border-radius: 10px;
+
+    background: #111827;
+    color: white;
+
+    font-size: 20px;
+
+    cursor: pointer;
+
+    z-index: 1002;
+  }
+
+
+  /* Sidebar cachée à gauche */
+  .admin-sidebar {
+    width: 250px;
+
+    left: -250px;
+
+    padding: 28px 18px;
+
+    transition: left 0.3s ease;
+
+    z-index: 1001;
+  }
+
+
+  /* Sidebar ouverte */
+  .admin-sidebar.admin-sidebar-open {
+    left: 0;
+  }
+
+
+  /* On réaffiche normalement les textes */
+  .admin-sidebar nav a {
+    justify-content: flex-start;
+    font-size: 14px;
+    gap: 13px;
+  }
+
+
+  /* Logo normal */
+  .admin-logo {
+    font-size: 22px;
+    padding-left: 12px;
+  }
+
+
+  /* Fond derrière la sidebar */
+  .admin-sidebar-overlay {
+    display: block;
+
+    position: fixed;
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.4);
+
+    z-index: 1000;
+  }
+
+
+  /* Le Dashboard récupère toute la largeur */
+  .admin-main {
+    margin-left: 0;
+
+    width: 100%;
+
+    padding: 75px 15px 25px;
+
+    box-sizing: border-box;
+  }
+}
+
+
+/* TRÈS PETIT TÉLÉPHONE */
+@media (max-width: 380px) {
+
+  .admin-sidebar {
+    width: 240px;
+    left: -240px;
+  }
+
+  .admin-sidebar.admin-sidebar-open {
+    left: 0;
+  }
+
+  .admin-main {
+    margin-left: 0;
+    width: 100%;
+    padding: 75px 10px 20px;
+  }
+}
+/* =========================================
+   RESPONSIVE ADMIN PRODUITS
+========================================= */
+
+@media (max-width: 768px) {
+
+  .product-toolbar {
+    width: 100%;
+  }
+
+  .admin-search {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .admin-search input {
+    min-width: 0;
+  }
+
+  .product-modal-overlay {
+    padding: 0;
+  }
+
+  .product-modal {
+    width: 100%;
+    max-width: 100%;
+    height: 100vh;
+    padding: 22px 15px;
+    border-radius: 0;
+    box-sizing: border-box;
+  }
+
+  .product-modal-header h2 {
+    font-size: 21px;
+  }
+
+  .product-form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .product-upload-box {
+    box-sizing: border-box;
+  }
+
+  .product-form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .product-cancel-btn,
+  .product-submit-btn {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 380px) {
+
+  .product-modal {
+    padding: 20px 12px;
+  }
+
+  .product-modal-header h2 {
+    font-size: 19px;
+  }
+
+  .admin-product-description {
+    max-width: 180px;
+  }
+}
+/* =========================================
+   RÉDUIRE ESPACEMENT TABLEAU PRODUITS
+   TABLETTE + TÉLÉPHONE
+========================================= */
+
+@media (max-width: 1024px) {
+
+  .table-wrapper th {
+    padding: 10px 8px;
+  }
+
+  .table-wrapper td {
+    padding: 8px;
+    vertical-align: middle;
+  }
+
+  .admin-product-image {
+    width: 45px;
+    height: 45px;
+  }
+
+  .admin-product-description {
+    line-height: 1.3;
+  }
+}
+
+
+/* TÉLÉPHONE */
+@media (max-width: 600px) {
+
+  .table-wrapper th {
+    padding: 8px 6px;
+    font-size: 12px;
+  }
+
+  .table-wrapper td {
+    padding: 6px;
+    font-size: 13px;
+  }
+
+  .admin-product-image {
+    width: 40px;
+    height: 40px;
+    padding: 3px;
+  }
+
+  .edit-btn,
+  .delete-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .action-buttons {
+    gap: 5px;
+  }
+}
+/* =========================================
+   LIGNES PRODUITS COMPACTES
+   TABLETTE + MOBILE
+========================================= */
+
+@media (max-width: 1024px) {
+
+  .table-wrapper tbody tr {
+    height: auto !important;
+    min-height: 0 !important;
+  }
+
+  .table-wrapper tbody td {
+    height: auto !important;
+    min-height: 0 !important;
+
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+
+    vertical-align: middle !important;
+  }
+
+  .admin-product-image {
+    width: 38px !important;
+    height: 38px !important;
+    margin: 0 !important;
+  }
+
+  .admin-product-description {
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1.2 !important;
+  }
+
+  .action-buttons {
+    margin: 0 !important;
+  }
+}
+/* =========================================
+   SCROLL TABLEAU PRODUITS
+   HORIZONTAL + VERTICAL
+========================================= */
+
+@media (max-width: 1024px) {
+
+  .table-wrapper {
+    width: 100%;
+    max-width: 100%;
+
+    /* Scroll horizontal + vertical */
+    overflow: auto !important;
+
+    /* Hauteur de la zone visible */
+    max-height: 500px;
+
+    -webkit-overflow-scrolling: touch;
+
+    border-radius: 12px;
+  }
+
+  .table-wrapper table {
+    width: 100%;
+    min-width: 850px !important;
+  }
+
+  /* Garde les titres visibles pendant le scroll vertical */
+  .table-wrapper thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: #f8fafc;
+  }
+
+  /* Scrollbar */
+  .table-wrapper::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .table-wrapper::-webkit-scrollbar-track {
+    background: #e2e8f0;
+    border-radius: 10px;
+  }
+
+  .table-wrapper::-webkit-scrollbar-thumb {
+    background: #64748b;
+    border-radius: 10px;
+  }
+}
+
+
+/* TÉLÉPHONE */
+@media (max-width: 600px) {
+
+  .table-wrapper {
+    max-height: 420px;
+  }
+}
+/* =========================================
+   RESPONSIVE ADMIN COMMANDES
+========================================= */
+
+@media (max-width: 1024px) {
+
+  /* Tableau commandes */
+  .admin-table {
+    min-width: 750px;
+  }
+
+  /* Boutons actions */
+  .user-actions {
+    align-items: center;
+    flex-wrap: nowrap;
+  }
+
+  .user-action {
+    flex-shrink: 0;
+  }
+}
+
+
+/* TÉLÉPHONE */
+@media (max-width: 768px) {
+
+  /* Recherche + filtre */
+  .users-toolbar {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .users-search {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .users-filter {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Tableau */
+  .admin-table {
+    min-width: 750px !important;
+  }
+
+  /* Fenêtre détails commande */
+  .user-modal-overlay {
+    padding: 15px;
+    box-sizing: border-box;
+  }
+
+  .user-modal {
+    width: 100%;
+    max-width: 460px;
+    max-height: calc(100vh - 30px);
+
+    padding: 22px;
+
+    overflow-y: auto;
+    box-sizing: border-box;
+  }
+
+  .user-details > div {
+    gap: 10px;
+  }
+
+  .user-details strong {
+    overflow-wrap: anywhere;
+  }
+}
+
+
+/* TRÈS PETIT TÉLÉPHONE */
+@media (max-width: 380px) {
+
+  .user-modal-overlay {
+    padding: 10px;
+  }
+
+  .user-modal {
+    padding: 18px 15px;
+  }
+
+  .user-details > div {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .user-details strong {
+    text-align: left;
+  }
+}
+/* =========================================
+   RESPONSIVE ADMIN CLIENTS
+========================================= */
+
+/* TABLETTE */
+@media (max-width: 1024px) {
+
+  .customers-toolbar {
+    width: 100%;
+  }
+
+  .customers-search {
+    box-sizing: border-box;
+  }
+
+  /* Le tableau garde toutes ses colonnes */
+  .admin-table {
+    min-width: 850px;
+  }
+
+  .customer-view-btn {
+    white-space: nowrap;
+  }
+}
+
+
+/* TÉLÉPHONE */
+@media (max-width: 768px) {
+
+  .customers-toolbar {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .customers-search {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .customers-filter {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Tableau avec scroll */
+  .admin-table {
+    min-width: 850px !important;
+  }
+
+  /* Fenêtre détails client */
+  .customer-modal-overlay {
+    align-items: stretch;
+  }
+
+  .customer-modal {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+
+    padding: 22px 15px;
+
+    box-sizing: border-box;
+    overflow-y: auto;
+  }
+
+  .customer-modal-header h2 {
+    font-size: 21px;
+  }
+
+  .customer-profile {
+    padding: 20px 0;
+  }
+
+  .customer-details-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .customer-detail-item {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .customer-detail-item strong {
+    overflow-wrap: anywhere;
+  }
+}
+
+
+/* TRÈS PETIT TÉLÉPHONE */
+@media (max-width: 380px) {
+
+  .customer-modal {
+    padding: 18px 12px;
+  }
+
+  .customer-modal-header h2 {
+    font-size: 19px;
+  }
+
+  .customer-avatar {
+    width: 50px;
+    height: 50px;
+    font-size: 21px;
+  }
+
+  .customer-detail-item {
+    padding: 13px;
+  }
+}
+/* =========================================
+   RESPONSIVE ADMIN UTILISATEURS
+========================================= */
+
+/* TABLETTE */
+@media (max-width: 1024px) {
+
+  .users-toolbar {
+    width: 100%;
+  }
+
+  .users-search {
+    box-sizing: border-box;
+  }
+
+  /* Conserve toutes les colonnes */
+  .table-wrapper table {
+    min-width: 900px;
+  }
+
+  .role-badge,
+  .user-status {
+    white-space: nowrap;
+  }
+
+  .user-actions {
+    flex-wrap: nowrap;
+  }
+
+  .user-action {
+    flex-shrink: 0;
+  }
+}
+
+
+/* TÉLÉPHONE */
+@media (max-width: 768px) {
+
+  .users-toolbar {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .users-search {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .users-filter {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Scroll horizontal + vertical */
+  .table-wrapper {
+    width: 100%;
+    max-width: 100%;
+
+    max-height: 420px;
+
+    overflow: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-wrapper table {
+    width: 100%;
+    min-width: 900px !important;
+  }
+
+  /* Garde l'en-tête visible pendant le scroll vertical */
+  .table-wrapper thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: #f8fafc;
+  }
+
+  .role-badge,
+  .user-status {
+    white-space: nowrap;
+  }
+
+  .user-actions {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 5px;
+  }
+
+  .user-action {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+  }
+}
+
+
+/* TRÈS PETIT TÉLÉPHONE */
+@media (max-width: 380px) {
+
+  .table-wrapper {
+    max-height: 380px;
+  }
+
+  .user-action {
+    width: 30px;
+    height: 30px;
+  }
+}
+/* =========================================
+   RESPONSIVE ADMIN STATISTIQUES
+========================================= */
+
+/* TABLETTE */
+@media (max-width: 1024px) {
+
+  .admin-main .dashboard-card {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .admin-main .dashboard-card canvas {
+    max-width: 100% !important;
+  }
+
+  .top-products {
+    width: 100%;
+  }
+
+  .top-product {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+
+/* TÉLÉPHONE */
+@media (max-width: 768px) {
+
+  .admin-main .dashboard-card {
+    padding: 18px;
+    overflow: hidden;
+  }
+
+  /* Graphique */
+  .admin-main .dashboard-card canvas {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Produits les plus vendus */
+  .top-product {
+    gap: 10px;
+  }
+
+  .top-product > div {
+    min-width: 0;
+  }
+
+  .top-product p {
+    overflow-wrap: anywhere;
+  }
+
+  .top-product strong {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  /* Dernières commandes */
+  .table-wrapper {
+    width: 100%;
+    max-width: 100%;
+    overflow: auto !important;
+  }
+
+  .table-wrapper table {
+    min-width: 600px !important;
+  }
+}
+
+
+/* TRÈS PETIT TÉLÉPHONE */
+@media (max-width: 380px) {
+
+  .admin-main .dashboard-card {
+    padding: 14px;
+  }
+
+  .card-header h3 {
+    font-size: 17px;
+  }
+
+  .top-product {
+    padding: 12px;
+  }
+
+  .top-product strong {
+    font-size: 13px;
+  }
+}

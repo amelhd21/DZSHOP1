@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { CartContext } from "./contexte/CartContext";
 import { AuthContext } from "./contexte/AuthContext";
 import { apiFetch, lireJson } from "./api";
-
+import "./CheckoutPage.css";
 function CheckoutPage() {
 
   const { total, livraison, clearCart, panier } = useContext(CartContext);
@@ -65,7 +65,7 @@ function CheckoutPage() {
 
     return (
 
-      <div className="container py-5 text-center" style={{ marginTop: "150px", maxHeight: "650px", marginBottom: "150px" }}>
+      <div className="container py-5 text-center " style={{ marginTop: "150px", maxHeight: "650px", marginBottom: "150px" }}>
 
         <div className="display-1">
           ✅
@@ -122,7 +122,7 @@ function CheckoutPage() {
 
   return (
 
-    <div className="container py-5" style={{ maxWidth: "500px" }}>
+    <div className="container py-5 checkout-container" style={{ maxWidth: "500px" }}>
 
       <h1 className="mb-4">
         Livraison

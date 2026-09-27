@@ -50,9 +50,9 @@ function ProductCard({ id, title, price, img, dec }) {
       <button
         className="cart-button"
         type="button"
-        onClick={handleAddToCart}
+        onClick={() => navigate(`/products/${id}`)}
       >
-        Ajouter au panier
+        DETAIL
       </button>
     </div>
   );

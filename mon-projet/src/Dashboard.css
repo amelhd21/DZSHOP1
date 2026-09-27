@@ -215,3 +215,119 @@ color: white;
     white-space: nowrap;
   }
 }
+/* =========================================
+   RESPONSIVE TABLETTE
+   De 769px à 1024px
+========================================= */
+
+@media (min-width: 769px) and (max-width: 1024px) {
+
+  .dashboard-hero {
+    min-height: 280px;
+    padding: 30px 25px 40px;
+  }
+
+  .dashboard-hero h1 {
+    font-size: 36px;
+  }
+
+  .dashboard-hero p {
+    line-height: 1.5;
+  }
+
+  .dashboard-content {
+    width: 100%;
+    padding: 60px 30px;
+  }
+
+  .dashboard-features {
+    gap: 50px;
+  }
+
+  .products-header {
+    gap: 20px;
+  }
+}
+
+
+/* =========================================
+   RESPONSIVE TÉLÉPHONE
+   Jusqu'à 480px
+========================================= */
+
+@media (max-width: 480px) {
+
+  .dashboard {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .dashboard-hero {
+    width: 100%;
+    min-height: 250px;
+    padding: 30px 15px;
+  }
+
+  .dashboard-hero h1 {
+    font-size: 27px;
+    line-height: 1.2;
+  }
+
+  .dashboard-hero p {
+    font-size: 13px;
+    line-height: 1.5;
+    padding: 0 10px;
+  }
+
+  .discover-btn {
+    font-size: 16px;
+    padding: 10px 15px;
+  }
+
+  .dashboard-content {
+    width: 100%;
+    padding: 45px 15px;
+  }
+
+  .dashboard-features {
+    grid-template-columns: 1fr;
+    gap: 35px;
+  }
+
+  .feature-icon {
+    font-size: 30px;
+  }
+
+  .feature-card {
+    width: 100%;
+  }
+
+  .feature-card h3 {
+    font-size: 15px;
+  }
+
+  .feature-card p {
+    font-size: 14px;
+  }
+
+  .products-section {
+    width: 100%;
+  }
+
+  .products-header {
+    width: 100%;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .products-header h2 {
+    font-size: 20px;
+  }
+
+  .products-btn {
+    font-size: 15px;
+    padding: 7px 9px;
+    margin-top: 20px;
+    white-space: nowrap;
+  }
+}

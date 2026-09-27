@@ -298,3 +298,140 @@
   color: #b45309;
 }
 
+/* =========================================
+   AJUSTEMENTS RESPONSIVE PROFIL
+========================================= */
+
+
+/* TABLETTE */
+@media (min-width: 601px) and (max-width: 1024px) {
+
+  .profile-page {
+    margin-top: 0;
+    padding: 140px 25px 50px;
+    box-sizing: border-box;
+  }
+
+  .profile-container {
+    width: 100%;
+  }
+
+  .profile-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+
+/* TÉLÉPHONE */
+@media (max-width: 600px) {
+
+  .profile-page {
+    width: 100%;
+    min-height: 100vh;
+
+    margin-top: 0;
+
+    /* espace sous la navbar mobile */
+    padding: 160px 15px 40px;
+
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+
+  .profile-container {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .profile-header {
+    margin-bottom: 20px;
+  }
+
+  .profile-header h1 {
+    font-size: 24px;
+  }
+
+  .profile-header p {
+    font-size: 14px;
+  }
+
+  .profile-grid {
+    width: 100%;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .profile-card {
+    width: 100%;
+    padding: 18px;
+
+    box-sizing: border-box;
+  }
+
+  .profile-card-title {
+    gap: 10px;
+  }
+
+  .profile-card-title > svg {
+    width: 38px;
+    height: 38px;
+    padding: 9px;
+  }
+
+  .profile-info-item {
+    width: 100%;
+    padding: 12px;
+
+    box-sizing: border-box;
+  }
+
+  .password-form,
+  .password-field,
+  .password-input {
+    width: 100%;
+  }
+
+  .order-header,
+  .order-footer {
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .order-item {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+
+/* TRÈS PETIT TÉLÉPHONE */
+@media (max-width: 380px) {
+
+  .profile-page {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .profile-card {
+    padding: 15px;
+  }
+
+  .profile-header h1 {
+    font-size: 22px;
+  }
+
+  .profile-card-title h2 {
+    font-size: 16px;
+  }
+
+  .profile-info-item {
+    gap: 10px;
+  }
+
+  .order-header,
+  .order-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

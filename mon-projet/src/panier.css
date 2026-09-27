@@ -270,4 +270,185 @@
 .buy-now-btn:hover {
   background: #e60013;
 }
+/* =========================================
+   RESPONSIVE PANIER
+========================================= */
+
+
+/* TABLETTE */
+@media (min-width: 701px) and (max-width: 1024px) {
+
+  .panier {
+    padding: 120px 20px 60px;
+  }
+
+  .panier-produit {
+    width: 100%;
+    padding: 25px 25px;
+    gap: 20px;
+  }
+
+  .panier-produit h2 {
+    font-size: 20px;
+  }
+
+  .panier-produit p {
+    width: 150px;
+    font-size: 18px;
+  }
+
+  .panier-produit div {
+    left: 190px;
+  }
+}
+
+
+/* TÉLÉPHONE */
+@media (max-width: 700px) {
+
+  .panier {
+    width: 100%;
+    min-height: 100vh;
+
+    /* espace sous la navbar mobile */
+    padding: 150px 10px 40px;
+
+    overflow-x: hidden;
+  }
+
+  .panier:before {
+    width: 100%;
+    padding: 20px 15px;
+
+    font-size: 18px;
+
+    box-sizing: border-box;
+  }
+
+  .panier > p {
+    width: 100%;
+    padding: 20px 10px;
+
+    font-size: 16px;
+
+    box-sizing: border-box;
+  }
+
+  .panier-produit {
+    width: 100%;
+    min-height: auto;
+
+    padding: 20px 15px;
+
+    gap: 15px;
+
+    display: grid;
+    grid-template-columns: 90px 1fr;
+
+    align-items: center;
+
+    box-sizing: border-box;
+  }
+
+  .panier-produit img {
+    width: 90px;
+    height: 90px;
+
+    grid-column: 1;
+    grid-row: 1 / 3;
+  }
+
+  .panier-produit h2 {
+    width: 100%;
+
+    font-size: 18px;
+
+    grid-column: 2;
+
+    overflow-wrap: break-word;
+  }
+
+  .panier-produit p {
+    width: 100%;
+
+    margin: 0;
+
+    text-align: left;
+
+    font-size: 17px;
+
+    grid-column: 2;
+  }
+
+  .panier-produit div {
+    position: static;
+
+    grid-column: 1 / 3;
+
+    width: fit-content;
+
+    margin-top: 5px;
+  }
+
+  .panier-produit > button {
+    left: auto;
+    right: 10px;
+    top: 5px;
+  }
+
+  .panier h2:last-child {
+    width: 100%;
+
+    padding: 20px 15px;
+
+    font-size: 21px;
+
+    box-sizing: border-box;
+  }
+
+  .buy-now-btn {
+    width: 100%;
+
+    height: 46px;
+
+    font-size: 20px;
+  }
+}
+
+
+/* TRÈS PETIT TÉLÉPHONE */
+@media (max-width: 380px) {
+
+  .panier {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  .panier:before {
+    font-size: 16px;
+  }
+
+  .panier-produit {
+    grid-template-columns: 75px 1fr;
+    padding: 15px 10px;
+    gap: 10px;
+  }
+
+  .panier-produit img {
+    width: 75px;
+    height: 75px;
+  }
+
+  .panier-produit h2 {
+    font-size: 16px;
+  }
+
+  .panier-produit p {
+    font-size: 16px;
+  }
+
+  .panier h2:last-child {
+    font-size: 19px;
+  }
+}
 
