@@ -75,3 +75,13 @@
     font-size: 14px;
   }
 }
+
+/* Espacement boutons confirmation - tablette et téléphone */
+@media (max-width: 1024px) {
+  .checkout-success-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+}

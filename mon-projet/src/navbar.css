@@ -231,3 +231,15 @@
         font-size: 13px;
     }
 }
+/* Centrer le contenu des boutons sur tablette et téléphone */
+@media (max-width: 1024px) {
+    .bar-navigation button,
+    .bar-navigation a.btn-primary {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+        line-height: normal !important;
+        padding: 0 !important;
+    }
+}

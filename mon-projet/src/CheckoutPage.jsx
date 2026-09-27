@@ -86,13 +86,17 @@ function CheckoutPage() {
 
         <br />
 
-        <Link className="btn btn-primary me-2" to="/profile" style={{ fontSize: "20px" }}>
-          Mes commandes
-        </Link>
+        <div className="checkout-success-buttons">
 
-        <Link className="btn btn-outline-primary" to="/products" style={{ fontSize: "20px" }}>
-          Continuer mes achats
-        </Link>
+  <Link className="btn btn-primary me-2" to="/profile" style={{ fontSize: "20px" }}>
+    Mes commandes
+  </Link>
+
+  <Link className="btn btn-outline-primary" to="/products" style={{ fontSize: "20px" }}>
+    Continuer mes achats
+  </Link>
+
+</div>
 
       </div>
 
