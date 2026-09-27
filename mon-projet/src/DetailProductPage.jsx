@@ -1,9 +1,8 @@
-
 import { Link, useParams } from 'react-router-dom'
 import { useState,useContext,useEffect} from 'react'
 import { CartContext } from './contexte/CartContext'
 import './DetailProductPage.css'
-import { apiFetch } from './api'      // à ajouter avec les autres imports
+import { apiFetch } from './api' // à ajouter avec les autres imports
 
 
 function ProductDetailPage() {
@@ -27,8 +26,8 @@ useEffect(() => {
   const [ajoute, setAjoute] = useState(false) 
 
  function ajouterAuPanier() {
-  addToCart(produit1)   // ① on ajoute le produit
-  setAjoute(true)      // ② on affiche la confirmation
+  addToCart(produit1) // ① on ajoute le produit
+  setAjoute(true) // ② on affiche la confirmation
 }
  
 
@@ -92,6 +91,8 @@ function handleMouseMove(e) {
 
   image.style.transformOrigin = `${x}% ${y}%`
 }
+
+/* ZOOM TACTILE TABLETTE + TÉLÉPHONE */
 function handleTouchMove(e) {
   const container = e.currentTarget
   const image = container.querySelector('.main-product-image')
@@ -141,7 +142,7 @@ function handleTouchEnd(e) {
         </div>
 
         {/* Grande image */}
-<div
+  <div
   className="main-image-container"
   onMouseMove={handleMouseMove}
   onTouchStart={handleTouchMove}
