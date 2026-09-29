@@ -36,7 +36,7 @@ function Piedpage() {
                         </li>
 
                         <li>
-                            <a href="#Panier">Panier</a>
+                            <NavLink className="nav-link"to="/panier">Panier</NavLink>
                         </li>
                     </ul>
                 </div>
@@ -68,7 +68,7 @@ function Piedpage() {
                 {/* Copyright */}
                 <div className="s3divfooter">
                     <p>
-                        © Septembre 2026 DZShop — Tous droits réservés ( HADJAMI AMEL)
+                        © Septembre 2026 DZShop — Tous droits réservés ( HADJ AMEL)
                     </p>
                 </div>
 
