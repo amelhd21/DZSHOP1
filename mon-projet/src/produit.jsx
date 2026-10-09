@@ -65,19 +65,9 @@ function ProductCard({ id, title, price, img, dec }) {
 
 function ProductList() {
   const [apiProducts, setApiProducts] = useState([]);
-
-  useEffect(() => {
-    apiFetch("/api/products")
-      .then((res) => res.json())
-      
-.then((data) => {
-  setApiProducts(Array.isArray(data) ? data : []);
-})
-      .catch((err) => {
-        console.error("Erreur chargement produits :", err);
-      });
-  }, []);
-
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [retryCount, setRetryCount] = useState(0);
 
   // ===============================
   // RECHERCHE
@@ -98,65 +88,83 @@ function ProductList() {
   const [currentPage, setCurrentPage] = useState(1);
 
   const [pageSize, setPageSize] = useState(8);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
 
   // ===============================
-  // FILTRAGE + RECHERCHE + TRI
+  // CHARGEMENT DE LA PAGE DEPUIS L'API
+  // Recherche, tri et pagination sont effectués par le serveur.
   // ===============================
 
-  const filteredProducts = apiProducts
-    .filter((product) => {
+  useEffect(() => {
+    const controller = new AbortController();
+    let active = true;
 
-      const searchValue = search
-        .toLowerCase()
-        .trim();
+    setLoading(true);
+    setError("");
 
-      return (
-        product.title
-          .toLowerCase()
-          .includes(searchValue) ||
-
-        product.dec
-          .toLowerCase()
-          .includes(searchValue)
-      );
-    })
-
-    .sort((a, b) => {
-
-      // Prix croissant
-      if (sortPrice === "asc") {
-        return a.price - b.price;
-      }
-
-      // Prix décroissant
-      if (sortPrice === "desc") {
-        return b.price - a.price;
-      }
-
-      // Aucun tri
-      return 0;
+    const params = new URLSearchParams({
+      page: String(currentPage),
+      limit: String(pageSize),
+      search: search.trim(),
+      sort: sortPrice
     });
 
-  // ===============================
-  // NOMBRE TOTAL DE PAGES
-  // ===============================
+    async function loadProducts() {
+      try {
+        const response = await apiFetch("/api/products?" + params.toString(), {
+          signal: controller.signal
+        });
+        const data = await response.json().catch(() => null);
 
-  const totalPages = Math.ceil(
-    filteredProducts.length / pageSize
-  );
+        if (!response.ok) {
+          throw new Error(data?.message || "Impossible de charger les produits.");
+        }
 
-  // ===============================
-  // PRODUITS DE LA PAGE
-  // ===============================
+        if (
+          !data ||
+          !Array.isArray(data.products) ||
+          !Number.isSafeInteger(data.total) || data.total < 0 ||
+          !Number.isSafeInteger(data.totalPages) || data.totalPages < 0 ||
+          !Number.isSafeInteger(data.page) || data.page < 1 ||
+          !Number.isSafeInteger(data.limit) || data.limit < 1 || data.limit > 64 ||
+          data.page > Math.max(1, data.totalPages)
+        ) {
+          throw new Error("Impossible de charger les produits. Réessayez dans un instant.");
+        }
 
-  const startIndex =
-    (currentPage - 1) * pageSize;
+        if (!active) return;
 
-  const currentProducts =
-    filteredProducts.slice(
-      startIndex,
-      startIndex + pageSize
-    );
+        setApiProducts(data.products);
+        setTotal(data.total);
+        setTotalPages(data.totalPages);
+
+        // Une suppression peut rendre la page demandée inexistante.
+        if (data.page !== currentPage) {
+          setCurrentPage(data.page);
+        }
+      } catch (err) {
+        if (!active || controller.signal.aborted) return;
+
+        setApiProducts([]);
+        setTotal(0);
+        setTotalPages(0);
+        setError(err.message || "Impossible de charger les produits. Réessayez dans un instant.");
+      } finally {
+        if (active) setLoading(false);
+      }
+    }
+
+    loadProducts();
+
+    return () => {
+      active = false;
+      controller.abort();
+    };
+  }, [currentPage, pageSize, search, sortPrice, retryCount]);
+
+  // L'API renvoie déjà uniquement les produits de la page demandée.
+  const currentProducts = apiProducts;
 
   // ===============================
   // RECHERCHE
@@ -200,6 +208,7 @@ function ProductList() {
   const changePage = (page) => {
 
     if (
+      !Number.isInteger(page) ||
       page < 1 ||
       page > totalPages
     ) {
@@ -358,17 +367,17 @@ function ProductList() {
           RÉSULTAT RECHERCHE
       =============================== */}
 
-      {search && (
+      {search && !loading && !error && (
 
         <p className="search-result">
 
-          {filteredProducts.length} produit
-          {filteredProducts.length > 1
+          {total} produit
+          {total > 1
             ? "s"
             : ""}
 
           {" "}trouvé
-          {filteredProducts.length > 1
+          {total > 1
             ? "s"
             : ""}
 
@@ -380,7 +389,26 @@ function ProductList() {
           PRODUITS
       =============================== */}
 
-      {currentProducts.length > 0 ? (
+      {loading ? (
+
+        <div className="no-products" role="status" aria-live="polite">
+          <p>Chargement des produits...</p>
+        </div>
+
+      ) : error ? (
+
+        <div className="no-products" role="alert">
+          <h2>Chargement impossible</h2>
+          <p>{error}</p>
+          <button
+            type="button"
+            onClick={() => setRetryCount((count) => count + 1)}
+          >
+            Réessayer
+          </button>
+        </div>
+
+      ) : currentProducts.length > 0 ? (
 
         <div className="products-list">
 
@@ -433,7 +461,7 @@ function ProductList() {
           PAGINATION
       =============================== */}
 
-      {filteredProducts.length > 0 && (
+      {total > 0 && !error && (
 
         <div className="premium-pagination">
 

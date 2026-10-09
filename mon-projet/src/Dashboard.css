@@ -16,7 +16,7 @@ body {
 
 .dashboard {
   width: 100%;
-  min-height: 100vh;
+  /*min-height: 100vh;*/
 
   /* Décale toute la page sous la navbar */
   padding-top: 70px;
